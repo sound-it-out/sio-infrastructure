@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <PackageId>SIO.Infrastructure.EntityFrameworkCore.SqlServer</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>sound-it-out</Authors>
+    <Company>sound-it-out</Company>
+    <PackageDescription></PackageDescription>
+    <RepositoryUrl>https://github.com/sound-it-out/sio-infrastructure</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SIO.Infrastructure.EntityFrameworkCore\SIO.Infrastructure.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+</Project>
