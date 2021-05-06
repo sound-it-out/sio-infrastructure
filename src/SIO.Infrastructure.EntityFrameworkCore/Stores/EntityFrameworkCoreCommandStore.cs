@@ -36,7 +36,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
                 throw new ArgumentNullException(nameof(command));
 
             var type = command.GetType();
-            var data = _commandSerializer.SerializeToJson(command);
+            var data = _commandSerializer.Serialize(command);
 
             using (var context = _dbContextFactory.Create())
             {

@@ -57,7 +57,6 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Topics
             {
                 var eventTypeCache = scope.ServiceProvider.GetRequiredService<IEventTypeCache>();
                 var eventDispatcher = scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
-                var eventDeserializer = scope.ServiceProvider.GetRequiredService<IEventDeserializer>();
 
                 if (!eventTypeCache.TryGet(eventName, out var type))
                 {

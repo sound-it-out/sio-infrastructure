@@ -31,7 +31,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
                 StreamId = streamId,
                 CorrelationId = context.CorrelationId,
                 CausationId = context.CausationId,
-                Data = _eventSerializer.SerializeToJson(@event),
+                Data = _eventSerializer.Serialize(@event),
                 Id = @event.Id,
                 Name = type.Name,
                 Type = type.FullName,

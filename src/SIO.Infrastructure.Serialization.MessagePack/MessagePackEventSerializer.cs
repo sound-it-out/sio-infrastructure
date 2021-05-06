@@ -5,15 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace SIO.Infrastructure.Serialization.MessagePack
 {
-    internal sealed class MessagePackEventSerializer : IEventSerializer
+    public sealed class MessagePackEventSerializer : IEventSerializer
     {
+        private readonly MessagePackSerializerOptions _options;
         private readonly ILogger<MessagePackEventSerializer> _logger;
 
-        public MessagePackEventSerializer(ILogger<MessagePackEventSerializer> logger)
+        public MessagePackEventSerializer(MessagePackSerializerOptions options,
+            ILogger<MessagePackEventSerializer> logger)
         {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
             if (logger == null)
                 throw new ArgumentNullException(nameof(logger));
 
+            _options = options;
             _logger = logger;
         }
 
@@ -25,7 +30,7 @@ namespace SIO.Infrastructure.Serialization.MessagePack
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            return MessagePackSerializer.Serialize(data, cancellationToken: cancellationToken);
+            return MessagePackSerializer.Serialize(data, _options, cancellationToken: cancellationToken);
         }
 
         public string SerializeToJson<T>(T data, CancellationToken cancellationToken = default)
@@ -36,7 +41,7 @@ namespace SIO.Infrastructure.Serialization.MessagePack
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            return MessagePackSerializer.SerializeToJson(data, cancellationToken: cancellationToken);
+            return MessagePackSerializer.SerializeToJson(data, _options, cancellationToken: cancellationToken);
         }
     }
 }

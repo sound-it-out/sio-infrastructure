@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SIO.Infrastructure.Commands;
 using SIO.Infrastructure.Events;
+using SIO.Infrastructure.Extensions;
 using SIO.Infrastructure.Queries;
 
 namespace SIO.Infrastructure.Serialization.MessagePack.Extensions
@@ -26,13 +27,14 @@ namespace SIO.Infrastructure.Serialization.MessagePack.Extensions
 
             return builder;
         }
-        public static ISIOInfrastructureBuilder AddEvents(this ISIOInfrastructureBuilder builder)
+        public static ISIOInfrastructureBuilder AddEvents(this ISIOInfrastructureBuilder builder, Action<EventOptions> optionsAction)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
 
             builder.Services.AddScoped<IEventDispatcher, DefaultEventDispatcher>();
-            builder.Services.AddScoped<IEventManager, DefaultEventManager>();
+
+            builder.Services.Configure(optionsAction);
 
             return builder;
         }

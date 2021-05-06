@@ -9,13 +9,15 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Messages
     internal sealed class DefaultMessageFactory : IMessageFactory
     {
         private readonly IEventSerializer _eventSerializer;
+        private readonly IEventDeserializer _eventDeserializer;
 
-        public DefaultMessageFactory(IEventSerializer eventSerializer)
+        public DefaultMessageFactory(IEventSerializer eventSerializer, IEventDeserializer eventDeserializer)
         {
             if (eventSerializer == null)
                 throw new ArgumentNullException(nameof(eventSerializer));
 
             _eventSerializer = eventSerializer;
+            _eventDeserializer = eventDeserializer;
         }
 
         public Message CreateMessage<TEvent>(IEventNotification<TEvent> context) where TEvent : IEvent
@@ -46,11 +48,10 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Messages
         {
             var @event = context.Payload;
             var body = _eventSerializer.Serialize(@event);
-
             var message = new Message
             {
                 MessageId = @event.Id.ToString(),
-                Body = body,
+                Body = Encoding.UTF8.GetBytes(body),
                 Label = eventName,
                 CorrelationId = context.CorrelationId?.ToString(),
                 UserProperties =

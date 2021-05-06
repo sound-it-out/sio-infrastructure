@@ -39,9 +39,22 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Subscriptions
             _clients = new List<ISubscriptionClient>();
         }
 
-        public async Task<IReadOnlyList<ISubscriptionClient>> ConfigureAsync()
+        public async Task<IReadOnlyList<ISubscriptionClient>> RegisterClientsAsync()
         {
+            await ConfigureSubscriptionsAsync();
+
             // If we've already been configured, just close the existing clients for now.
+            foreach (var client in _clients)
+            {
+                client.RegisterMessageHandler((message, cancelationToken) => _messageReceiver.ReceiveAsync(client, message, cancelationToken),
+                                               new MessageHandlerOptions(_messageReceiver.OnErrorAsync) { AutoComplete = false });
+            }
+
+            return _clients.AsReadOnly();
+        }
+
+        public async Task ConfigureSubscriptionsAsync()
+        {
             foreach (var client in _clients)
                 await client.CloseAsync();
 
@@ -50,7 +63,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Subscriptions
 
             if (!topicExists)
                 await _managementClient.CreateTopicAsync(_options.Value.Topic.Name, _options.Value.Topic.DeleteOnIdleAfter, _options.Value.Topic.TimeToLive);
-            
+
             foreach (var subscription in _options.Value.Subscriptions)
             {
                 var client = _subscriptionClientFactory.Create(subscription);
@@ -74,15 +87,10 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Subscriptions
                 foreach (var rule in rulesToRemove)
                     await client.RemoveRuleAsync(rule.Name);
 
-                client.RegisterMessageHandler((message, cancelationToken) => _messageReceiver.ReceiveAsync(client, message, cancelationToken),
-                                               new MessageHandlerOptions(_messageReceiver.OnErrorAsync) { AutoComplete = false });
-
                 clients.Add(client);
             }
 
             _clients = clients;
-
-            return _clients.AsReadOnly();
         }
     }
 }

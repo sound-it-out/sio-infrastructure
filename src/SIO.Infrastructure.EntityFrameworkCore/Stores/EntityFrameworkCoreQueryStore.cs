@@ -37,7 +37,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
                 throw new ArgumentNullException(nameof(query));
 
             var type = query.GetType();
-            var data = _querySerializer.SerializeToJson(query);
+            var data = _querySerializer.Serialize(query);
 
             using (var context = _dbContextFactory.Create())
             {

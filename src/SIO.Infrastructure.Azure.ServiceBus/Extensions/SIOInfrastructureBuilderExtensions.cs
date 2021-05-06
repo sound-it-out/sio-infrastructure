@@ -26,8 +26,8 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Extensions
             builder.Services.AddScoped<ISubscriptionClientFactory, DefaultSubscriptionClientFactory>();
             builder.Services.AddScoped<ISubscriptionClientManager, DefaultSubscriptionClientManager>();
             builder.Services.AddScoped<ITopicClientFactory, DefaultTopicClientFactory>();
-            builder.Services.AddSingleton<ITopicMessageReceiver, DefaultTopicMessageReceiver>();
-            builder.Services.AddSingleton<IEventContextFactory, DefaultEventContextFactory>();
+            builder.Services.AddScoped<ITopicMessageReceiver, DefaultTopicMessageReceiver>();
+            builder.Services.AddScoped<IEventContextFactory, DefaultEventContextFactory>();
             builder.Services.AddScoped<ITopicMessageSender, DefaultTopicMessageSender>();
             builder.Services.AddScoped<IServiceBusManagementClient, ServiceBusManagementClient>();
             builder.Services.AddScoped(sp =>

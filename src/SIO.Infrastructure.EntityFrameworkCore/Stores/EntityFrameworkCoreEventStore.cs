@@ -80,10 +80,9 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
             foreach (var @event in events)
             {
                 if (!_eventTypeCache.TryGet(@event.Type, out var type))
-                    throw new InvalidOperationException($"Cannot find type for event '{@event.Name}' - '{@event.Type}'.");
+                    continue;
 
                 var result = _eventContextFactory.CreateContext(@event);
-                //var result = (IEvent)_eventDeserializer.Deserialize(@event.Data, type);
 
                 results.Add(result);
             }
@@ -99,10 +98,9 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
             foreach (var @event in events)
             {
                 if (!_eventTypeCache.TryGet(@event.Type, out var type))
-                    throw new InvalidOperationException($"Cannot find type for event '{@event.Name}' - '{@event.Type}'.");
+                    continue;
 
                 var result = _eventContextFactory.CreateContext(@event);
-                //var result = (IEvent)_eventDeserializer.Deserialize(@event.Data, type);
 
                 results.Add(result);
             }
@@ -119,10 +117,28 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
             foreach (var @event in events)
             {
                 if (!_eventTypeCache.TryGet(@event.Type, out var type))
+                    continue;
+
+                var result = _eventContextFactory.CreateContext(@event);
+
+                results.Add(result);
+            }
+
+            return results;
+        }
+
+        public async Task<IEnumerable<IEventContext<IEvent>>> GetEventsAsync(StreamId streamId, DateTimeOffset timeStamp, CancellationToken cancellationToken = default)
+        {
+            var results = new List<IEventContext<IEvent>>();
+
+            var events = await GetAllEventsForwardsForStreamInternalAsync(streamId, timeStamp).ConfigureAwait(false);
+
+            foreach (var @event in events)
+            {
+                if (!_eventTypeCache.TryGet(@event.Type, out var type))
                     throw new InvalidOperationException($"Cannot find type for event '{@event.Name}' - '{@event.Type}'.");
 
                 var result = _eventContextFactory.CreateContext(@event);
-                //var result = (IEvent)_eventDeserializer.Deserialize(@event.Data, type);
 
                 results.Add(result);
             }
@@ -157,6 +173,22 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
                 return events;
             }
         }
+
+        private async Task<List<Entities.Event>> GetAllEventsForwardsForStreamInternalAsync(StreamId streamId, DateTimeOffset timeStamp)
+        {
+            using (var context = _dbContextFactory.Create())
+            {
+                var events = await context.Events.OrderBy(e => e.SequenceNo)
+                                                 .Where(e => e.Timestamp >= timeStamp)
+                                                 .Where(e => e.StreamId == streamId)
+                                                 .Take(DefaultPageSize)
+                                                 .AsNoTracking()
+                                                 .ToListAsync();
+
+                return events;
+            }
+        }
+
         private async Task<List<Entities.Event>> GetAllEventsForwardsForStreamInternalAsync(StreamId streamId, long offset)
         {
             using (var context = _dbContextFactory.Create())

@@ -36,7 +36,7 @@ namespace SIO.Infrastructure.RabbitMQ.Messages
             if (!_eventTypeCache.TryGet(message.RoutingKey, out var type))
                 throw new ArgumentException($"Could not find event type for '{message.RoutingKey}'");
 
-            var @event = (IEvent)_eventDeserializer.Deserialize(message.Body, type);
+            var @event = (IEvent)_eventDeserializer.Deserialize(Encoding.UTF8.GetString(message.Body), type);
 
             string streamId = null;
             CorrelationId? correlationId = null;

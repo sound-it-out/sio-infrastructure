@@ -55,7 +55,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus
 
             _logger.LogInformation($"Starting Azure Service bus");
 
-            _clients = await _subscriptionClientManager.ConfigureAsync();
+            _clients = await _subscriptionClientManager.RegisterClientsAsync();
 
             _running = true;
 

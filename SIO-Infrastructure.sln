@@ -31,11 +31,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.EntityFr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.EntityFrameworkCore.SqlServer", "src\SIO.Infrastructure.EntityFrameworkCore.SqlServer\SIO.Infrastructure.EntityFrameworkCore.SqlServer.csproj", "{322FE415-50ED-4C17-9835-94EC660CDB5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Serialization.MessagePack", "src\SIO.Infrastructure.Serialization.MessagePack\SIO.Infrastructure.Serialization.MessagePack.csproj", "{17C0D2F3-C65D-4272-94AC-A4A07EB6C2FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Azure.ServiceBus", "src\SIO.Infrastructure.Azure.ServiceBus\SIO.Infrastructure.Azure.ServiceBus.csproj", "{7CE8D818-682F-4374-9644-89969F983E4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIO.Infrastructure.Azure.ServiceBus", "src\SIO.Infrastructure.Azure.ServiceBus\SIO.Infrastructure.Azure.ServiceBus.csproj", "{7CE8D818-682F-4374-9644-89969F983E4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.RabbitMQ", "src\SIO.Infrastructure.RabbitMQ\SIO.Infrastructure.RabbitMQ.csproj", "{E037C0DD-84CD-42B6-AA1A-999FF2744CB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIO.Infrastructure.RabbitMQ", "src\SIO.Infrastructure.RabbitMQ\SIO.Infrastructure.RabbitMQ.csproj", "{E037C0DD-84CD-42B6-AA1A-999FF2744CB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Azure.Storage", "src\SIO.Infrastructure.Azure.Storage\SIO.Infrastructure.Azure.Storage.csproj", "{D58C53E4-76A1-4E09-849E-6B43EC1E1886}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Testing", "src\SIO.Infrastructure.Testing\SIO.Infrastructure.Testing.csproj", "{4DF1FDD9-0184-4FF3-AEEB-8891E21A1DAD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Azure.ServiceBus.Tests", "tests\SIO.Infrastructure.Azure.ServiceBus.Tests\SIO.Infrastructure.Azure.ServiceBus.Tests.csproj", "{CDC10451-7F4C-42A2-BD58-6E9A0BC38216}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Serialization.Json", "src\SIO.Infrastructure.Serialization.Json\SIO.Infrastructure.Serialization.Json.csproj", "{76C8E6A5-6948-4246-BF4C-7E3D82950B43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +61,6 @@ Global
 		{322FE415-50ED-4C17-9835-94EC660CDB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{322FE415-50ED-4C17-9835-94EC660CDB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{322FE415-50ED-4C17-9835-94EC660CDB5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17C0D2F3-C65D-4272-94AC-A4A07EB6C2FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17C0D2F3-C65D-4272-94AC-A4A07EB6C2FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17C0D2F3-C65D-4272-94AC-A4A07EB6C2FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17C0D2F3-C65D-4272-94AC-A4A07EB6C2FA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7CE8D818-682F-4374-9644-89969F983E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7CE8D818-682F-4374-9644-89969F983E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CE8D818-682F-4374-9644-89969F983E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,6 +69,22 @@ Global
 		{E037C0DD-84CD-42B6-AA1A-999FF2744CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E037C0DD-84CD-42B6-AA1A-999FF2744CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E037C0DD-84CD-42B6-AA1A-999FF2744CB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D58C53E4-76A1-4E09-849E-6B43EC1E1886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D58C53E4-76A1-4E09-849E-6B43EC1E1886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D58C53E4-76A1-4E09-849E-6B43EC1E1886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D58C53E4-76A1-4E09-849E-6B43EC1E1886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF1FDD9-0184-4FF3-AEEB-8891E21A1DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF1FDD9-0184-4FF3-AEEB-8891E21A1DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF1FDD9-0184-4FF3-AEEB-8891E21A1DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF1FDD9-0184-4FF3-AEEB-8891E21A1DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDC10451-7F4C-42A2-BD58-6E9A0BC38216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDC10451-7F4C-42A2-BD58-6E9A0BC38216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDC10451-7F4C-42A2-BD58-6E9A0BC38216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDC10451-7F4C-42A2-BD58-6E9A0BC38216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76C8E6A5-6948-4246-BF4C-7E3D82950B43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76C8E6A5-6948-4246-BF4C-7E3D82950B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76C8E6A5-6948-4246-BF4C-7E3D82950B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76C8E6A5-6948-4246-BF4C-7E3D82950B43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,9 +93,12 @@ Global
 		{4716B993-855F-4341-B367-F2D43D764CFE} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
 		{86E8D9DF-5536-4DCA-8654-A36B5E3C105D} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
 		{322FE415-50ED-4C17-9835-94EC660CDB5B} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
-		{17C0D2F3-C65D-4272-94AC-A4A07EB6C2FA} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
 		{7CE8D818-682F-4374-9644-89969F983E4E} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
 		{E037C0DD-84CD-42B6-AA1A-999FF2744CB0} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
+		{D58C53E4-76A1-4E09-849E-6B43EC1E1886} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
+		{4DF1FDD9-0184-4FF3-AEEB-8891E21A1DAD} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
+		{CDC10451-7F4C-42A2-BD58-6E9A0BC38216} = {63E4107D-5A02-4ECB-8428-E9FAB4F87579}
+		{76C8E6A5-6948-4246-BF4C-7E3D82950B43} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {98D2C644-AEB8-4977-BAEC-B8C7B57C71C2}

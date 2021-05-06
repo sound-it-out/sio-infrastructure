@@ -4,7 +4,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Options;
+using SIO.Infrastructure.Extensions;
 
 namespace SIO.Infrastructure.Events
 {
@@ -12,22 +13,12 @@ namespace SIO.Infrastructure.Events
     {
         private readonly ConcurrentDictionary<string, Type> _lookup;
 
-        public EventTypeCache()
+        public EventTypeCache(IOptions<EventOptions> options)
         {
-            var eventType = typeof(IEvent);
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
 
-            var assemblies = DependencyContext.Default.RuntimeLibraries
-                //.Where(library => !library.Name.StartsWith("Microsoft.Test"))
-                .SelectMany(library => library.GetDefaultAssemblyNames(DependencyContext.Default))
-                .Select(Assembly.Load)
-                .ToArray();
-
-            var types = assemblies.SelectMany(assembly => assembly.DefinedTypes)
-                                  .Where(typeInfo => typeInfo.IsClass && !typeInfo.IsAbstract)
-                                  .Where(typeInfo => eventType.IsAssignableFrom(typeInfo))
-                                  .Select(typeInfo => typeInfo.AsType());
-
-            _lookup = new ConcurrentDictionary<string, Type>(types.ToDictionary(type => type.FullName));
+            _lookup = new ConcurrentDictionary<string, Type>(options.Value.Events.ToDictionary(type => type.FullName));
 
             // TODO(Dan): Should we eagerly check for type.Name duplicates?
         }

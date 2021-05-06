@@ -37,7 +37,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
             if (!_eventTypeCache.TryGet(dbEvent.Type, out var type))
                 throw new ArgumentException($"Could not find event type for '{dbEvent.Type}'");
 
-            var @event = (IEvent)_eventDeserializer.DeserializeFromJson(dbEvent.Data, type);
+            var @event = (IEvent)_eventDeserializer.Deserialize(dbEvent.Data, type);
 
             if (_cache.TryGetValue(type, out var activator))
                 return activator(dbEvent.StreamId, @event, dbEvent.CorrelationId, dbEvent.CausationId, @event.Timestamp, Actor.From(dbEvent.Actor));

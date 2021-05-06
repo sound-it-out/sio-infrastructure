@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Threading;
 using MessagePack;
+using MessagePack.Formatters;
+using MessagePack.Resolvers;
 using Microsoft.Extensions.Logging;
 
 namespace SIO.Infrastructure.Serialization.MessagePack
 {
     internal sealed class MessagePackEventDeserializer : IEventDeserializer
     {
-        private readonly ILogger<MessagePackEventDeserializer> _logger;
+        private readonly MessagePackSerializerOptions _options;
+        private readonly ILogger<MessagePackEventDeserializer> _logger;        
 
-        public MessagePackEventDeserializer(ILogger<MessagePackEventDeserializer> logger)
+        public MessagePackEventDeserializer(MessagePackSerializerOptions options,
+            ILogger<MessagePackEventDeserializer> logger)
         {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
             if (logger == null)
                 throw new ArgumentNullException(nameof(logger));
 
+            _options = options;
             _logger = logger;
         }
 
@@ -28,7 +35,7 @@ namespace SIO.Infrastructure.Serialization.MessagePack
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            return MessagePackSerializer.Deserialize(type, data, cancellationToken: cancellationToken);
+            return MessagePackSerializer.Deserialize(type, data, _options, cancellationToken: cancellationToken);
         }
 
         public T Deserialize<T>(byte[] data, CancellationToken cancellationToken = default)
@@ -42,7 +49,7 @@ namespace SIO.Infrastructure.Serialization.MessagePack
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            return MessagePackSerializer.Deserialize<T>(data, cancellationToken: cancellationToken);
+            return MessagePackSerializer.Deserialize<T>(data, _options, cancellationToken: cancellationToken);
         }
 
         public object DeserializeFromJson(string data, Type type, CancellationToken cancellationToken = default)
@@ -53,7 +60,7 @@ namespace SIO.Infrastructure.Serialization.MessagePack
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            return Deserialize(MessagePackSerializer.ConvertFromJson(data, cancellationToken: cancellationToken), type, cancellationToken: cancellationToken);
+            return Deserialize(MessagePackSerializer.ConvertFromJson(data, _options, cancellationToken: cancellationToken), type, cancellationToken: cancellationToken);
         }
 
         public T DeserializeFromJson<T>(string data, CancellationToken cancellationToken = default)
@@ -64,7 +71,7 @@ namespace SIO.Infrastructure.Serialization.MessagePack
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            return Deserialize<T>(MessagePackSerializer.ConvertFromJson(data, cancellationToken: cancellationToken), cancellationToken: cancellationToken);
+            return Deserialize<T>(MessagePackSerializer.ConvertFromJson(data, _options, cancellationToken: cancellationToken), cancellationToken: cancellationToken);
         }
     }
 }

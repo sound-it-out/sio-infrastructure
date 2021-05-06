@@ -36,8 +36,8 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Messages
 
             if (!_eventTypeCache.TryGet(message.Label, out var type))
                 throw new ArgumentException($"Could not find event type for '{message.Label}'");
-
-            var @event = (IEvent)_eventDeserializer.Deserialize(message.Body, type);
+            var test = Encoding.UTF8.GetString(message.Body);
+            var @event = (IEvent)_eventDeserializer.Deserialize(Encoding.UTF8.GetString(message.Body), type);
 
             string streamId = null;
             CorrelationId? correlationId = null;

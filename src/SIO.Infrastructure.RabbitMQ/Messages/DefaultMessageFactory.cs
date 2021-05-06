@@ -48,7 +48,7 @@ namespace SIO.Infrastructure.RabbitMQ.Messages
                 CorrelationId = context.CorrelationId,
                 CausationId = context.CausationId,
                 UserId = context.UserId,
-                Body = body,
+                Body = Encoding.UTF8.GetBytes(body),
             };
         }
     }

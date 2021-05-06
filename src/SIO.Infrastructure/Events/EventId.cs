@@ -2,10 +2,8 @@
 
 namespace SIO.Infrastructure.Events
 {
-    [MessagePack.MessagePackObject]
     public readonly struct EventId : IEquatable<EventId>
     {
-        [MessagePack.Key(nameof(Value))]
         internal string Value { get; }
 
         internal EventId(string value)

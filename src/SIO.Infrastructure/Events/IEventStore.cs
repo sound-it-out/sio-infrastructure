@@ -9,6 +9,7 @@ namespace SIO.Infrastructure.Events
     {
         Task<Page> GetEventsAsync(long offset, CancellationToken cancellationToken = default);
         Task<IEnumerable<IEventContext<IEvent>>> GetEventsAsync(StreamId streamId, CancellationToken cancellationToken = default);
+        Task<IEnumerable<IEventContext<IEvent>>> GetEventsAsync(StreamId streamId, DateTimeOffset timeStamp, CancellationToken cancellationToken = default);
         Task<IEnumerable<IEventContext<IEvent>>> GetEventsAsync(StreamId streamId, long offset, CancellationToken cancellationToken = default);
         Task SaveAsync(StreamId streamId, IEnumerable<IEventContext<IEvent>> events, CancellationToken cancellationToken = default);
         Task<long> CountAsync(StreamId streamId, CancellationToken cancellationToken = default);
