@@ -39,12 +39,12 @@ namespace SIO.Infrastructure
             var buffer = bufferSize <= 128
                 ? stackalloc char[bufferSize]
                 : bufferToReturnToPool = ArrayPool<char>.Shared.Rent(bufferSize);
-            var base64CharCount = Base64UrlEncode(input, buffer);
 #if NET5_0
+            var base64CharCount = Base64UrlEncode(input, buffer);
             var result = new string(buffer.Slice(0, base64CharCount));
 #endif
 #if NETSTANDARD2_0
-            var result = new string(buffer.Slice(0, base64CharCount).ToArray());
+            var result = Base64UrlEncode(input, buffer);
 #endif
 
             if (bufferToReturnToPool != null)
@@ -52,20 +52,30 @@ namespace SIO.Infrastructure
 
             return result;
         }
+#if NET5_0
         private static int Base64UrlEncode(ReadOnlySpan<byte> input, Span<char> output)
+#endif
+#if NETSTANDARD2_0
+        private static string Base64UrlEncode(ReadOnlySpan<byte> input, Span<char> output)
+#endif
         {
             Debug.Assert(output.Length >= GetArraySizeRequiredToEncode(input.Length));
 
             if (input.IsEmpty)
+#if NET5_0
                 return 0;
+#endif
+#if NETSTANDARD2_0
+                return string.Empty;
+#endif
 
 #if NET5_0
             // Use base64url encoding with no padding characters. See RFC 4648, Sec. 5.
             Convert.TryToBase64Chars(input, output, out var charsWritten);
 #endif
 #if NETSTANDARD2_0
-            // Use base64url encoding with no padding characters. See RFC 4648, Sec. 5.
-            var @string = Convert.ToBase64String(input.ToArray());
+                // Use base64url encoding with no padding characters. See RFC 4648, Sec. 5.
+                var @string = Convert.ToBase64String(input.ToArray());
             output = @string.ToCharArray();
             var charsWritten = @string.Length;
 #endif
@@ -80,16 +90,26 @@ namespace SIO.Infrastructure
                 }
                 else if (ch == '/')
                 {
-                    output[i] = '_';
+                    output[i] = '-';
                 }
                 else if (ch == '=')
                 {
+#if NET5_0
                     // We've reached a padding character; truncate the remainder.
                     return i;
+#endif
+#if NETSTANDARD2_0
+                    // We've reached a padding character; truncate the remainder.
+                    return new string(output.Slice(0, i).ToArray());
+#endif
                 }
             }
-
+#if NET5_0
             return charsWritten;
+#endif
+#if NETSTANDARD2_0
+            return new string(output.ToArray());
+#endif
         }
         private static int GetArraySizeRequiredToEncode(int count)
         {

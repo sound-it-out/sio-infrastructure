@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SIO.Infrastructure.EntityFrameworkCore.DbContexts;
 using SIO.Infrastructure.EntityFrameworkCore.Extensions;
@@ -19,25 +18,19 @@ namespace SIO.Infrastructure.EntityFrameworkCore.SqlServer.Extensions
             var sqlBuilder = new SIOEntityFrameworkCoreSqlServerOptions();
             builderAction(sqlBuilder);
 
-            if (sqlBuilder.UseStore)
+            if (!string.IsNullOrWhiteSpace(sqlBuilder.StoreConnectionString))
             {
-                source.Services.AddDbContext<SIOStoreDbContext>((sp, options) =>
+                source.Services.AddDbContext<SIOStoreDbContext>(options =>
                 {
-                    var config = sp.GetRequiredService<IConfiguration>();
-                    var connectionString = config.GetConnectionString("Store");
-
-                    options.UseSqlServer(connectionString, sqlBuilder.StoreOptions);
+                    options.UseSqlServer(sqlBuilder.StoreConnectionString, sqlBuilder.StoreOptions);
                 });
             }
 
-            if (sqlBuilder.UseProjections)
+            if (!string.IsNullOrWhiteSpace(sqlBuilder.ProjectionConnectionString))
             {
-                source.Services.AddDbContext<SIOProjectionDbContext>((sp, options) =>
+                source.Services.AddDbContext<SIOProjectionDbContext>(options =>
                 {
-                    var config = sp.GetRequiredService<IConfiguration>();
-                    var connectionString = config.GetConnectionString("Projection");
-
-                    options.UseSqlServer(connectionString, sqlBuilder.ProjectionOptions);
+                    options.UseSqlServer(sqlBuilder.ProjectionConnectionString, sqlBuilder.ProjectionOptions);
                 });
             }
 

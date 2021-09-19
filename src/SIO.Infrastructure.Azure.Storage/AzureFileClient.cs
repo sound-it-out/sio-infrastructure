@@ -40,7 +40,7 @@ namespace SIO.Infrastructure.Azure.Storage
 
         private async Task<BlobClient> GetBlobAsync(string fileName, string userId)
         {
-            BlobContainerClient container = new BlobContainerClient(_options.ConnectionString, userId);
+            BlobContainerClient container = new BlobContainerClient(_options.ConnectionString, userId.ToLower());
             await container.CreateIfNotExistsAsync();
             return container.GetBlobClient(fileName);
         }

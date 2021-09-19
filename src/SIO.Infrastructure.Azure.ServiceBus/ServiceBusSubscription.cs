@@ -65,6 +65,15 @@ namespace SIO.Infrastructure.Azure.ServiceBus
 
             return this;
         }
+
+        public ServiceBusSubscription ForEvents(params Type[] types)
+        {
+            foreach(var type in types)
+                if(typeof(IEvent).IsAssignableFrom(type) && !_events.Contains(type))
+                    _events.Add(type);
+
+            return this;
+        }
         /// <summary>
         /// Sets the maximum number of times a message will attempt to be redlivered if it could not be successfully consumed.
         /// </summary>

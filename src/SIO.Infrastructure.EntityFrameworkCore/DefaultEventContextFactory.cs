@@ -47,7 +47,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
             _cache.TryAdd(type, activator);
 
             var correlationId = dbEvent.CorrelationId != null ? CorrelationId.From(dbEvent.CorrelationId) : (CorrelationId?)null;
-            var causationId = dbEvent.CausationId != null ? CausationId.From(dbEvent.CorrelationId) : (CausationId?)null;
+            var causationId = dbEvent.CausationId != null ? CausationId.From(dbEvent.CausationId) : (CausationId?)null;
 
             return activator(dbEvent.StreamId, @event, correlationId, causationId, @event.Timestamp, Actor.From(dbEvent.Actor));
         }

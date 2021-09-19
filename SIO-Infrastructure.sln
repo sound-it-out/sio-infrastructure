@@ -43,6 +43,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Azure.Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIO.Infrastructure.Serialization.Json", "src\SIO.Infrastructure.Serialization.Json\SIO.Infrastructure.Serialization.Json.csproj", "{76C8E6A5-6948-4246-BF4C-7E3D82950B43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIO.Infrastructure.Connections", "src\SIO.Infrastructure.Connections\SIO.Infrastructure.Connections.csproj", "{5ABFFE74-5045-4D17-B31D-83FD90CB9987}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{76C8E6A5-6948-4246-BF4C-7E3D82950B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76C8E6A5-6948-4246-BF4C-7E3D82950B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76C8E6A5-6948-4246-BF4C-7E3D82950B43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ABFFE74-5045-4D17-B31D-83FD90CB9987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ABFFE74-5045-4D17-B31D-83FD90CB9987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ABFFE74-5045-4D17-B31D-83FD90CB9987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ABFFE74-5045-4D17-B31D-83FD90CB9987}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{4DF1FDD9-0184-4FF3-AEEB-8891E21A1DAD} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
 		{CDC10451-7F4C-42A2-BD58-6E9A0BC38216} = {63E4107D-5A02-4ECB-8428-E9FAB4F87579}
 		{76C8E6A5-6948-4246-BF4C-7E3D82950B43} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
+		{5ABFFE74-5045-4D17-B31D-83FD90CB9987} = {7B6AA0C0-59A2-431A-B563-03C141DBCD56}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {98D2C644-AEB8-4977-BAEC-B8C7B57C71C2}

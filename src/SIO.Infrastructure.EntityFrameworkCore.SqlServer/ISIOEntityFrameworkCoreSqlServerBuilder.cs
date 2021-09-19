@@ -5,24 +5,22 @@ namespace SIO.Infrastructure.EntityFrameworkCore.SqlServer
 {
     public class SIOEntityFrameworkCoreSqlServerOptions
     {
-        internal bool UseStore { get; private set; }
-        internal bool UseProjections { get; private set; }
+        internal string StoreConnectionString { get; private set; }
+        internal string ProjectionConnectionString { get; private set; }
         internal Action<SqlServerDbContextOptionsBuilder> StoreOptions { get; private set; }
         internal Action<SqlServerDbContextOptionsBuilder> ProjectionOptions { get; private set; }
 
-        public SIOEntityFrameworkCoreSqlServerOptions AddStore(Action<SqlServerDbContextOptionsBuilder> action = null)
+        public SIOEntityFrameworkCoreSqlServerOptions AddStore(string connectionString, Action<SqlServerDbContextOptionsBuilder> action = null)
         {
-            UseStore = true;
+            StoreConnectionString = connectionString;
             StoreOptions = action;
-
             return this;
         }
 
-        public SIOEntityFrameworkCoreSqlServerOptions AddProjections(Action<SqlServerDbContextOptionsBuilder> action = null)
+        public SIOEntityFrameworkCoreSqlServerOptions AddProjections(string connectionString, Action<SqlServerDbContextOptionsBuilder> action = null)
         {
-            UseProjections = true;
+            ProjectionConnectionString = connectionString;
             ProjectionOptions = action;
-
             return this;
         }
     }

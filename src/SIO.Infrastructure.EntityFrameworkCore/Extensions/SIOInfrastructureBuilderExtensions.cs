@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SIO.EntityFrameworkCore.Projections;
 using SIO.Infrastructure.Commands;
+using SIO.Infrastructure.Domain;
 using SIO.Infrastructure.EntityFrameworkCore.DbContexts;
 using SIO.Infrastructure.EntityFrameworkCore.Stores;
 using SIO.Infrastructure.Events;
@@ -17,6 +18,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Extensions
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
 
+            builder.Services.AddScoped<IAggregateRepository, AggregateRepository>();
             builder.Services.AddScoped<IEventStore, EntityFrameworkCoreEventStore>();
             builder.Services.AddScoped<ICommandStore, EntityFrameworkCoreCommandStore>();
             builder.Services.AddScoped<IQueryStore, EntityFrameworkCoreQueryStore>();

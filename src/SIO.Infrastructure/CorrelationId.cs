@@ -17,6 +17,7 @@ namespace SIO.Infrastructure
             
             return new CorrelationId(value);
         }
+
         public static CorrelationId From(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

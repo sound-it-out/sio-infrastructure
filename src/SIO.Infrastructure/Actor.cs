@@ -10,7 +10,14 @@ namespace SIO.Infrastructure
         {
             Value = value;
         }
-        
+
+        public static Actor New()
+        {
+            var value = Base64UrlIdGenerator.New();
+
+            return new Actor(value);
+        }
+
         public static Actor From(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -18,6 +25,8 @@ namespace SIO.Infrastructure
 
             return new Actor(value);
         }
+
+        public static Actor Unknown => From(nameof(Unknown));
         
         public bool Equals(Actor other) => Value == other.Value;
         public override bool Equals(object obj) => obj is Actor other && Equals(other);

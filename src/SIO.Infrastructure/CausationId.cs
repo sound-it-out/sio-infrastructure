@@ -11,6 +11,13 @@ namespace SIO.Infrastructure
             Value = value;
         }
 
+        public static CausationId New()
+        {
+            var value = Base64UrlIdGenerator.New();
+
+            return new CausationId(value);
+        }
+
         public static CausationId From(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

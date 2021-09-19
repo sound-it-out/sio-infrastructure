@@ -16,6 +16,8 @@ namespace SIO.Infrastructure.Serialization.Json.Extensions
             builder.Services.AddSingleton<IEventSerializer, JsonEventSerializer>();
             builder.Services.AddSingleton<IQueryDeserializer, JsonQueryDeserializer>();
             builder.Services.AddSingleton<IQuerySerializer, JsonQuerySerializer>();
+            builder.Services.AddSingleton<IProjectionDeserializer, JsonProjectionDeserializer>();
+            builder.Services.AddSingleton<IProjectionSerializer, JsonProjectionSerializer>();
 
             return builder;
         }
