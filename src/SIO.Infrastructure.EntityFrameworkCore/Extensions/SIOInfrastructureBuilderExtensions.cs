@@ -1,9 +1,11 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 using SIO.EntityFrameworkCore.Projections;
 using SIO.Infrastructure.Commands;
 using SIO.Infrastructure.Domain;
 using SIO.Infrastructure.EntityFrameworkCore.DbContexts;
+using SIO.Infrastructure.EntityFrameworkCore.Projections;
 using SIO.Infrastructure.EntityFrameworkCore.Stores;
 using SIO.Infrastructure.Events;
 using SIO.Infrastructure.Projections;
@@ -27,6 +29,21 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Extensions
             builder.Services.AddScoped<ISIOStoreDbContextFactory, SIOStoreDbContextFactory>();
             builder.Services.AddScoped<ISIOProjectionDbContextFactory, SIOProjectionDbContextFactory>();
             builder.Services.AddScoped(typeof(IProjectionWriter<>), typeof(EntityFrameworkCoreProjectionWriter<>));
+
+            return builder;
+        }
+
+        public static ISIOInfrastructureBuilder AddEntityFrameworkCoreStoreProjector<TProjection>(this ISIOInfrastructureBuilder builder, Action<StoreProjectorOptions<TProjection>> options = null)
+            where TProjection : class, IProjection
+        {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+
+            options ??= o => o.Interval = 1000;
+
+            builder.Services.Configure(options);
+            builder.Services.AddSingleton<IProjector<TProjection>, EntityFrameworkCoreStoreProjector<TProjection>>();
+            builder.Services.AddHostedService(sp => sp.GetRequiredService<IProjector<TProjection>>());
 
             return builder;
         }

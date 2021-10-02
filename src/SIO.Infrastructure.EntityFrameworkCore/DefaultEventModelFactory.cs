@@ -37,6 +37,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
                 Type = type.FullName,
                 Timestamp = @event.Timestamp,
                 Actor = context.Actor,
+                ScheduledPublication = context.ScheduledPublication
             };
         }
     }

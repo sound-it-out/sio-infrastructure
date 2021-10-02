@@ -14,5 +14,6 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Entities
         public string Data { get; set; }
         public string Actor { get; set; }
         public DateTimeOffset Timestamp { get; set; }
+        public DateTimeOffset? ScheduledPublication { get; set; }
     }
 }

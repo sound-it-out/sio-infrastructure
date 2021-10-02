@@ -58,7 +58,14 @@ namespace SIO.Infrastructure.EntityFrameworkCore
             if (expectedVersion.GetValueOrDefault() != currentVersion)
                 throw new ConcurrencyException(aggregate.Id, expectedVersion.GetValueOrDefault(), currentVersion);
 
-            var contexts = events.Select(@event => new EventContext<IEvent>(streamId: aggregate.Id, @event: @event, correlationId: null, causationId: null, @event.Timestamp, actor: Actor.From("unknown")));
+            var contexts = events.Select(@event => new EventContext<IEvent>(
+                streamId: aggregate.Id,
+                @event: @event,
+                correlationId: null,
+                causationId: null,
+                timestamp: @event.Timestamp,
+                actor: Actor.From("unknown"),
+                scheduledPublication: null));
 
             await _eventStore.SaveAsync(StreamId.From(aggregate.Id), contexts, cancellationToken);
 
@@ -84,7 +91,14 @@ namespace SIO.Infrastructure.EntityFrameworkCore
             if (expectedVersion.GetValueOrDefault() != currentVersion)
                 throw new ConcurrencyException(aggregate.Id, expectedVersion.GetValueOrDefault(), currentVersion);
 
-            var contexts = events.Select(@event => new EventContext<IEvent>(streamId: aggregate.Id, @event: @event, correlationId: causation.CorrelationId, causationId: CausationId.From(causation.Id), @event.Timestamp, actor: causation.Actor));
+            var contexts = events.Select(@event => new EventContext<IEvent>(
+                streamId: aggregate.Id,
+                @event: @event,
+                correlationId: causation.CorrelationId,
+                causationId: CausationId.From(causation.Id),
+                timestamp: @event.Timestamp,
+                actor: causation.Actor,
+                scheduledPublication: null));
 
             await _eventStore.SaveAsync(StreamId.From(aggregate.Id), contexts);
 
@@ -110,7 +124,14 @@ namespace SIO.Infrastructure.EntityFrameworkCore
             if (expectedVersion.GetValueOrDefault() != currentVersion)
                 throw new ConcurrencyException(aggregate.Id, expectedVersion.GetValueOrDefault(), currentVersion);
 
-            var contexts = events.Select(@event => new EventContext<IEvent>(streamId: aggregate.Id, @event: @event, correlationId: causation.CorrelationId, causationId: CausationId.From(causation.Payload.Id), @event.Timestamp, actor: causation.Actor));
+            var contexts = events.Select(@event => new EventContext<IEvent>(
+                streamId: aggregate.Id,
+                @event: @event,
+                correlationId: causation.CorrelationId,
+                causationId: CausationId.From(causation.Payload.Id),
+                timestamp: @event.Timestamp,
+                actor: causation.Actor,
+                scheduledPublication: causation.ScheduledPublication));
 
             await _eventStore.SaveAsync(StreamId.From(aggregate.Id), contexts);
 

@@ -11,8 +11,9 @@ namespace SIO.Infrastructure.Events
         public TEvent Payload { get; }
         public DateTimeOffset Timestamp { get; }
         public Actor Actor { get; }
+        public DateTimeOffset? ScheduledPublication { get; }
 
-        public EventContext(string streamId, TEvent @event, CorrelationId? correlationId, CausationId? causationId, DateTimeOffset timestamp, Actor actor)
+        public EventContext(string streamId, TEvent @event, CorrelationId? correlationId, CausationId? causationId, DateTimeOffset timestamp, Actor actor, DateTimeOffset? scheduledPublication = null)
         {
             if (@event == null)
                 throw new ArgumentNullException(nameof(@event));
@@ -23,6 +24,7 @@ namespace SIO.Infrastructure.Events
             Payload = @event;
             Timestamp = timestamp;
             Actor = actor;
+            ScheduledPublication = scheduledPublication;
         }
     }
 }

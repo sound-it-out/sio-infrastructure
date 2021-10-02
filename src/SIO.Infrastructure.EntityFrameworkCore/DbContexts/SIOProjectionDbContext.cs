@@ -8,7 +8,7 @@ using SIO.Infrastructure.EntityFrameworkCore.EntityConfiguration;
 
 namespace SIO.Infrastructure.EntityFrameworkCore.DbContexts
 {
-    public sealed class SIOProjectionDbContext : DbContext
+    public class SIOProjectionDbContext : DbContext
     {
         public DbSet<ProjectionState> ProjectionStates { get; set; }
 

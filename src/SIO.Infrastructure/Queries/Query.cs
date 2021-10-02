@@ -1,5 +1,4 @@
 ﻿using System;
-using SIO.Infrastructure.Extensions;
 
 namespace SIO.Infrastructure.Queries
 {

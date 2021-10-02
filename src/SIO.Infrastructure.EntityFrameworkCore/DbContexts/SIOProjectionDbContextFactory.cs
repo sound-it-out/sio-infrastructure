@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SIO.Infrastructure.EntityFrameworkCore.DbContexts
 {
-    internal sealed class SIOProjectionDbContextFactory : ISIOProjectionDbContextFactory
+    public sealed class SIOProjectionDbContextFactory : ISIOProjectionDbContextFactory
     {
         private readonly IServiceProvider _serviceProvider;
 

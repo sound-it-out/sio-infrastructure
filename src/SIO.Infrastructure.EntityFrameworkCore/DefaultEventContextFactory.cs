@@ -40,7 +40,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
             var @event = (IEvent)_eventDeserializer.Deserialize(dbEvent.Data, type);
 
             if (_cache.TryGetValue(type, out var activator))
-                return activator(dbEvent.StreamId, @event, dbEvent.CorrelationId, dbEvent.CausationId, @event.Timestamp, Actor.From(dbEvent.Actor));
+                return activator(dbEvent.StreamId, @event, dbEvent.CorrelationId, dbEvent.CausationId, @event.Timestamp, Actor.From(dbEvent.Actor), dbEvent.ScheduledPublication);
 
             activator = BuildActivator(typeof(EventContext<>).MakeGenericType(type));
 

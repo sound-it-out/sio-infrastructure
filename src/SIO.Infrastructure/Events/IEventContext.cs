@@ -10,5 +10,6 @@ namespace SIO.Infrastructure.Events
         TEvent Payload { get; }
         DateTimeOffset Timestamp { get; }
         Actor Actor { get; }
+        DateTimeOffset? ScheduledPublication { get; }
     }
 }

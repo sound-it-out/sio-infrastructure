@@ -107,7 +107,8 @@ namespace SIO.EntityFrameworkCore.Projections
             var view = await UpdateAsync(subject, v =>
             {
                 update(v);
-            });
+                return v;
+            }, cancellationToken);
 
             return view;
         }
