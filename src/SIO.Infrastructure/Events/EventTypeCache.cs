@@ -9,9 +9,9 @@ using SIO.Infrastructure.Extensions;
 
 namespace SIO.Infrastructure.Events
 {
-    internal sealed class EventTypeCache : IEventTypeCache
+    public sealed class EventTypeCache : IEventTypeCache
     {
-        private readonly ConcurrentDictionary<string, Type> _lookup;
+        public readonly ConcurrentDictionary<string, Type> _lookup;
 
         public EventTypeCache(IOptions<EventOptions> options)
         {

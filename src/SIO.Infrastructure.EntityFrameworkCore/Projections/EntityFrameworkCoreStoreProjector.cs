@@ -128,7 +128,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
                     {
                         Name = _name,
                         CreatedDate = DateTimeOffset.UtcNow,
-                        Position = 0
+                        Position = 1
                     };
 
                     context.ProjectionStates.Add(state);

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using SIO.Infrastructure.Testing.Extensions;
 using SIO.Infrastructure.Testing.Fixtures;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SIO.Infrastructure.Testing.Abstractions
 {
@@ -24,11 +26,12 @@ namespace SIO.Infrastructure.Testing.Abstractions
         {
         }
 
-        public SpecificationWithConfiguration(TConfigurationFixture configurationFixture)
+        public SpecificationWithConfiguration(TConfigurationFixture configurationFixture, ITestOutputHelper testOutputHelper)
         {
             _configurationFixture = configurationFixture;
 
             var services = new ServiceCollection();
+            services.AddXunitLogging(testOutputHelper);
 
             BuildServices(services);
 

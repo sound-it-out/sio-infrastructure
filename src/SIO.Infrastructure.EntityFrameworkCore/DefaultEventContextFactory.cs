@@ -38,23 +38,22 @@ namespace SIO.Infrastructure.EntityFrameworkCore
                 throw new ArgumentException($"Could not find event type for '{dbEvent.Type}'");
 
             var @event = (IEvent)_eventDeserializer.Deserialize(dbEvent.Data, type);
+            var correlationId = dbEvent.CorrelationId != null ? CorrelationId.From(dbEvent.CorrelationId) : (CorrelationId?)null;
+            var causationId = dbEvent.CausationId != null ? CausationId.From(dbEvent.CausationId) : (CausationId?)null;
 
             if (_cache.TryGetValue(type, out var activator))
-                return activator(dbEvent.StreamId, @event, dbEvent.CorrelationId, dbEvent.CausationId, @event.Timestamp, Actor.From(dbEvent.Actor), dbEvent.ScheduledPublication);
+                return activator(dbEvent.StreamId, @event, correlationId, causationId, @event.Timestamp, Actor.From(dbEvent.Actor), dbEvent.ScheduledPublication);
 
             activator = BuildActivator(typeof(EventContext<>).MakeGenericType(type));
 
             _cache.TryAdd(type, activator);
 
-            var correlationId = dbEvent.CorrelationId != null ? CorrelationId.From(dbEvent.CorrelationId) : (CorrelationId?)null;
-            var causationId = dbEvent.CausationId != null ? CausationId.From(dbEvent.CausationId) : (CausationId?)null;
-
-            return activator(dbEvent.StreamId, @event, correlationId, causationId, @event.Timestamp, Actor.From(dbEvent.Actor));
+            return activator(dbEvent.StreamId, @event, correlationId, causationId, @event.Timestamp, Actor.From(dbEvent.Actor), dbEvent.ScheduledPublication);
         }
 
         private Activator<IEventContext<IEvent>> BuildActivator(Type type)
         {
-            var expectedParameterTypes = new Type[] { typeof(string), type.GenericTypeArguments[0], typeof(CorrelationId?), typeof(CausationId?), typeof(DateTimeOffset), typeof(Actor) };
+            var expectedParameterTypes = new Type[] { typeof(string), type.GenericTypeArguments[0], typeof(CorrelationId?), typeof(CausationId?), typeof(DateTimeOffset), typeof(Actor), typeof(DateTimeOffset?) };
             var constructor = type.GetConstructor(expectedParameterTypes);
 
             if (constructor == null)

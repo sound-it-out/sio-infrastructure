@@ -20,7 +20,7 @@ namespace SIO.Infrastructure.Projections
                 throw new ArgumentNullException(nameof(logger));
 
             _logger = logger;
-            _eventHandlers = new();
+            _eventHandlers = new Dictionary<Type, Func<IEvent, CancellationToken, Task>>();
         }
 
         protected void Handle<TEvent>(Func<TEvent, CancellationToken, Task> func)
@@ -37,7 +37,10 @@ namespace SIO.Infrastructure.Projections
             var type = @event.GetType();
 
             if (!_eventHandlers.TryGetValue(type, out var handler))
+            {
                 _logger.LogInformation($"Could not find handler for event type of '{type.Name}'");
+                return;
+            }                
 
             
             await handler(@event, cancellationToken);

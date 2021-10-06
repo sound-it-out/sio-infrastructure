@@ -18,3 +18,6 @@ mklink /D C:\Users\matth\.nuget\packages\sio.infrastructure.serialization.Json\0
 
 rmdir C:\Users\matth\.nuget\packages\sio.infrastructure.azure.storage\0.0.3\lib /s /q;
 mklink /D C:\Users\matth\.nuget\packages\sio.infrastructure.azure.storage\0.0.3\lib D:\Git\sound-it-out\sio-infrastructure\src\SIO.Infrastructure.Azure.Storage\bin\Debug;
+
+rmdir C:\Users\matth\.nuget\packages\sio.infrastructure.testing\0.0.3\lib /s /q;
+mklink /D C:\Users\matth\.nuget\packages\sio.infrastructure.testing\0.0.3\lib D:\Git\sound-it-out\sio-infrastructure\src\SIO.Infrastructure.Testing\bin\Debug;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using SIO.Infrastructure.Testing.Extensions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SIO.Infrastructure.Testing.Abstractions
 {
@@ -21,9 +23,10 @@ namespace SIO.Infrastructure.Testing.Abstractions
         {
         }
 
-        public Specification()
+        public Specification(ITestOutputHelper testOutputHelper)
         {
             var services = new ServiceCollection();
+            services.AddXunitLogging(testOutputHelper);
 
             BuildServices(services);
 

@@ -59,12 +59,12 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
         {
             var results = new List<IEventContext<IEvent>>();
 
-            var events = await GetAllEventsForwardsInternalAsync(offset).ConfigureAwait(false);
+            var events = await GetAllEventsForwardsInternalAsync(offset, cancellationToken).ConfigureAwait(false);
 
             if (events.Count > 0 && events[0].SequenceNo != offset + 1)
             {
                 _logger.LogInformation("Gap detected in stream. Expecting sequence no {ExpectedSequenceNo} but found sequence no {ActualSequenceNo}. Reloading events after {DefaultReloadInterval}ms.", offset + 1, events[0].SequenceNo, DefaultReloadInterval);
-                events = await GetAllEventsAfterDelayInternalAsync(offset).ConfigureAwait(false);
+                events = await GetAllEventsAfterDelayInternalAsync(offset, cancellationToken).ConfigureAwait(false);
             }
 
             for (var i = 0; i < events.Count - 1; i++)
@@ -72,7 +72,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
                 if (events[i].SequenceNo + 1 != events[i + 1].SequenceNo)
                 {
                     _logger.LogInformation("Gap detected in stream. Expecting sequence no {ExpectedSequenceNo} but found sequence no {ActualSequenceNo}. Reloading events after {DefaultReloadInterval}ms.", events[i].SequenceNo + 1, events[i + 1].SequenceNo, DefaultReloadInterval);
-                    events = await GetAllEventsAfterDelayInternalAsync(offset).ConfigureAwait(false);
+                    events = await GetAllEventsAfterDelayInternalAsync(offset, cancellationToken).ConfigureAwait(false);
                     break;
                 }
             }
@@ -93,7 +93,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
         {
             var results = new List<IEventContext<IEvent>>();
 
-            var events = await GetAllEventsForwardsForStreamInternalAsync(streamId, 0).ConfigureAwait(false);
+            var events = await GetAllEventsForwardsForStreamInternalAsync(streamId, 0, cancellationToken).ConfigureAwait(false);
 
             foreach (var @event in events)
             {
@@ -112,11 +112,11 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
         {
             var results = new List<IEventContext<IEvent>>();
 
-            var events = await GetAllEventsForwardsForStreamInternalAsync(streamId, offset).ConfigureAwait(false);
+            var events = await GetAllEventsForwardsForStreamInternalAsync(streamId, offset, cancellationToken).ConfigureAwait(false);
 
             foreach (var @event in events)
             {
-                if (!_eventTypeCache.TryGet(@event.Type, out var type))
+                if (!_eventTypeCache.TryGet(@event.Type, out _))
                     continue;
 
                 var result = _eventContextFactory.CreateContext(@event);
@@ -127,11 +127,27 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
             return results;
         }
 
+        public async Task<IEventContext<IEvent>> GetEventAsync(Subject subject, CancellationToken cancellationToken = default)
+        {
+            using (var context = _dbContextFactory.Create())
+            {
+                var @event = await context.Events.AsNoTracking()
+                                                 .FirstOrDefaultAsync(e => e.Id == subject, cancellationToken);
+                if(@event == null)
+                    throw new InvalidOperationException($"Unable to find event: {subject}");
+
+                if (!_eventTypeCache.TryGet(@event.Type, out _))
+                    throw new InvalidOperationException($"Unable to find event type: {@event.Type}");
+
+                return _eventContextFactory.CreateContext(@event);
+            }
+        }
+
         public async Task<IEnumerable<IEventContext<IEvent>>> GetEventsAsync(StreamId streamId, DateTimeOffset timeStamp, CancellationToken cancellationToken = default)
         {
             var results = new List<IEventContext<IEvent>>();
 
-            var events = await GetAllEventsForwardsForStreamInternalAsync(streamId, timeStamp).ConfigureAwait(false);
+            var events = await GetAllEventsForwardsForStreamInternalAsync(streamId, timeStamp, cancellationToken).ConfigureAwait(false);
 
             foreach (var @event in events)
             {
@@ -160,7 +176,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
             }
         }
 
-        private async Task<List<Entities.Event>> GetAllEventsForwardsInternalAsync(long offset)
+        private async Task<List<Entities.Event>> GetAllEventsForwardsInternalAsync(long offset, CancellationToken cancellationToken = default)
         {
             using (var context = _dbContextFactory.Create())
             {
@@ -168,13 +184,13 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
                                                  .Where(e => e.SequenceNo >= offset)
                                                  .Take(DefaultPageSize)
                                                  .AsNoTracking()
-                                                 .ToListAsync();
+                                                 .ToListAsync(cancellationToken);
 
                 return events;
             }
         }
 
-        private async Task<List<Entities.Event>> GetAllEventsForwardsForStreamInternalAsync(StreamId streamId, DateTimeOffset timeStamp)
+        private async Task<List<Entities.Event>> GetAllEventsForwardsForStreamInternalAsync(StreamId streamId, DateTimeOffset timeStamp, CancellationToken cancellationToken = default)
         {
             using (var context = _dbContextFactory.Create())
             {
@@ -183,13 +199,13 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
                                                  .Where(e => e.StreamId == streamId)
                                                  .Take(DefaultPageSize)
                                                  .AsNoTracking()
-                                                 .ToListAsync();
+                                                 .ToListAsync(cancellationToken);
 
                 return events;
             }
         }
 
-        private async Task<List<Entities.Event>> GetAllEventsForwardsForStreamInternalAsync(StreamId streamId, long offset)
+        private async Task<List<Entities.Event>> GetAllEventsForwardsForStreamInternalAsync(StreamId streamId, long offset, CancellationToken cancellationToken = default)
         {
             using (var context = _dbContextFactory.Create())
             {
@@ -198,17 +214,17 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
                                                  .Where(e => e.StreamId == streamId)
                                                  .Take(DefaultPageSize)
                                                  .AsNoTracking()
-                                                 .ToListAsync();
+                                                 .ToListAsync(cancellationToken);
 
                 return events;
             }
         }
-        private async Task<List<Entities.Event>> GetAllEventsAfterDelayInternalAsync(long offset)
+        private async Task<List<Entities.Event>> GetAllEventsAfterDelayInternalAsync(long offset, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Reloading events after {DefaultReloadInterval}ms.", DefaultReloadInterval);
 
             await Task.Delay(DefaultReloadInterval).ConfigureAwait(false);
-            return await GetAllEventsForwardsInternalAsync(offset).ConfigureAwait(false);
+            return await GetAllEventsForwardsInternalAsync(offset, cancellationToken).ConfigureAwait(false);
         }
     }
 }
