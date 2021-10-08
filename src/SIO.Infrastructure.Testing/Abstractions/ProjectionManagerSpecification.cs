@@ -13,20 +13,25 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using SIO.Infrastructure.Testing.Extensions;
 using Xunit.Abstractions;
+using System.Threading;
 
 namespace SIO.Infrastructure.Testing.Abstractions
 {
-    public abstract class ProjectionManagerSpecification<TProjectionManager, TProjection> : IAsyncLifetime
-        where TProjectionManager: class, IProjectionManager<TProjection>
+    public abstract class ProjectionManagerSpecification<TProjection> : IAsyncLifetime
         where TProjection : class, IProjection
     {
-        private readonly IServiceScope _serviceScope;
+        private readonly IServiceScope _serviceScope;        
         private readonly IProjectionManager<TProjection> _projectionManager;
+
+        protected readonly CancellationTokenSource _cancellationTokenSource = new();
 
         private ExceptionMode _exceptionMode;
         protected TProjection Projection { get; private set; }
+        protected IServiceProvider ServiceProvider => _serviceScope.ServiceProvider;
         protected Exception Exception { get; private set; }
-        
+
+        protected abstract Type ProjectionManager();
+
         protected abstract IEnumerable<IEvent> Given();
         protected virtual void When() { }
         protected void RecordExceptions()
@@ -49,7 +54,7 @@ namespace SIO.Infrastructure.Testing.Abstractions
              {
                  options.UseInMemoryDatabase($"Projection_{Subject.New()}");
              });
-            services.AddScoped<IProjectionManager<TProjection>, TProjectionManager>();
+            services.AddScoped(typeof(IProjectionManager<TProjection>), ProjectionManager());
 
             BuildServices(services);
 
@@ -66,12 +71,12 @@ namespace SIO.Infrastructure.Testing.Abstractions
                 When();
 
                 foreach (var @event in events)
-                    await _projectionManager.HandleAsync(@event);
+                    await _projectionManager.HandleAsync(@event, _cancellationTokenSource.Token);
 
                 var dbContextFacotry = _serviceScope.ServiceProvider.GetRequiredService<ISIOProjectionDbContextFactory>();
 
                 using (var context = dbContextFacotry.Create())
-                    Projection = await context.Set<TProjection>().FirstOrDefaultAsync();
+                    Projection = await context.Set<TProjection>().FirstOrDefaultAsync(_cancellationTokenSource.Token);
             }
             catch (Exception ex) when (_exceptionMode == ExceptionMode.Record)
             {

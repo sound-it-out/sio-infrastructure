@@ -16,10 +16,7 @@ namespace SIO.Infrastructure.Testing.Abstractions
 
         protected abstract IEnumerable<IEvent> Given();
         protected abstract void When();
-        protected void RecordExceptions()
-        {
-            _exceptionMode = ExceptionMode.Record;
-        }
+        protected void RecordExceptions() => _exceptionMode = ExceptionMode.Record;
 
 
         protected AggregateSpecification()

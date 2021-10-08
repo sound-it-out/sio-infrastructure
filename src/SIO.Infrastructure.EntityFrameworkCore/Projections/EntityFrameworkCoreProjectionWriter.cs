@@ -8,7 +8,7 @@ using SIO.Infrastructure.Projections;
 
 namespace SIO.EntityFrameworkCore.Projections
 {
-    internal sealed class EntityFrameworkCoreProjectionWriter<TView> : IProjectionWriter<TView>
+    public sealed class EntityFrameworkCoreProjectionWriter<TView> : IProjectionWriter<TView>
         where TView : class, IProjection
     {
         private readonly ISIOProjectionDbContextFactory  _projectionDbContextFactory;

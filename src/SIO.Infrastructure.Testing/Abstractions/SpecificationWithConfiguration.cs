@@ -11,17 +11,18 @@ namespace SIO.Infrastructure.Testing.Abstractions
     public abstract class SpecificationWithConfiguration<TConfigurationFixture, TResult> : IAsyncLifetime, IClassFixture<TConfigurationFixture>
         where TConfigurationFixture : BaseConfigurationFixture
     {
+        private ExceptionMode _exceptionMode;
         protected abstract Task<TResult> Given();
 
         protected abstract Task When();
 
         protected Exception Exception { get; private set; }
-        protected ExceptionMode ExceptionMode { get; set; }
         protected TResult Result { get; private set; }
 
         protected readonly TConfigurationFixture _configurationFixture;
         protected readonly IServiceProvider _serviceProvider;
 
+        protected void RecordExceptions() => _exceptionMode = ExceptionMode.Record;
         protected virtual void BuildServices(IServiceCollection services)
         {
         }
@@ -53,7 +54,7 @@ namespace SIO.Infrastructure.Testing.Abstractions
             }
             catch (Exception e)
             {
-                if (ExceptionMode == ExceptionMode.Record)
+                if (_exceptionMode == ExceptionMode.Record)
                     Exception = e;
                 else
                     throw;
@@ -64,16 +65,18 @@ namespace SIO.Infrastructure.Testing.Abstractions
     public abstract class SpecificationWithConfiguration<TConfigurationFixture> : IAsyncLifetime, IClassFixture<TConfigurationFixture>
         where TConfigurationFixture : BaseConfigurationFixture
     {
+        private ExceptionMode _exceptionMode;
+
         protected abstract Task Given();
 
         protected abstract Task When();
 
         protected Exception Exception { get; private set; }
-        protected ExceptionMode ExceptionMode { get; set; }
 
         protected readonly TConfigurationFixture _configurationFixture;
         protected readonly IServiceProvider _serviceProvider;
 
+        protected void RecordExceptions() => _exceptionMode = ExceptionMode.Record;
         protected virtual void BuildServices(IServiceCollection services)
         {
         }
@@ -102,12 +105,9 @@ namespace SIO.Infrastructure.Testing.Abstractions
             {
                 await Given();
             }
-            catch (Exception e)
+            catch (Exception e) when (_exceptionMode == ExceptionMode.Record)
             {
-                if (ExceptionMode == ExceptionMode.Record)
-                    Exception = e;
-                else
-                    throw;
+                Exception = e;
             }
         }
     }

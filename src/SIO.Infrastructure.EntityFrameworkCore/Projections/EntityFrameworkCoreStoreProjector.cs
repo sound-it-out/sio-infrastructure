@@ -10,7 +10,7 @@ using SIO.Infrastructure.Events;
 using SIO.Infrastructure.Projections;
 namespace SIO.Infrastructure.EntityFrameworkCore.Projections
 {
-    internal sealed class EntityFrameworkCoreStoreProjector<TProjection> : IProjector<TProjection>
+    public sealed class EntityFrameworkCoreStoreProjector<TProjection> : IProjector<TProjection>
         where TProjection : class, IProjection
     {
         private Task _executingTask;
@@ -170,7 +170,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
 
         public void Dispose()
         {
-            StoppingCts.Cancel();
+            StoppingCts?.Cancel();
         }
     }
 }
