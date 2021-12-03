@@ -24,17 +24,19 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Extensions
         private static Lazy<MethodInfo> _registerProjectionMethod = new Lazy<MethodInfo>(() => typeof(SIOInfrastructureBuilderExtensions)
             .GetMethod(nameof(SIOInfrastructureBuilderExtensions.InternalRegisterProjection), BindingFlags.Static | BindingFlags.NonPublic));
 
-        private static void InternalRegisterProjection<TProjection>(IServiceCollection services, object options)
+        private static void InternalRegisterProjection<TProjection, TProjectionManager>(IServiceCollection services, object options)
             where TProjection : class, IProjection
+            where TProjectionManager : class, IProjectionManager<TProjection>
         {
             services.Configure((Action<StoreProjectorOptions<TProjection>>)options);
             services.AddSingleton<IProjector<TProjection>, EntityFrameworkCoreStoreProjector<TProjection>>();
             services.AddScoped<IProjectionWriter<TProjection>, EntityFrameworkCoreProjectionWriter<TProjection>>();
+            services.AddScoped<IProjectionManager<TProjection>, TProjectionManager>();
             services.AddHostedService(sp => sp.GetRequiredService<IProjector<TProjection>>());
         }
 
-        private static void RegisterProjection(this IServiceCollection services, Type type, object options)
-            => _registerProjectionMethod.Value.MakeGenericMethod(type).Invoke(null, new object[] { services, options });
+        private static void RegisterProjection(this IServiceCollection services, Type projectionType, Type managerType, object options)
+            => _registerProjectionMethod.Value.MakeGenericMethod(projectionType, managerType).Invoke(null, new object[] { services, options });
 
         public static ISIOInfrastructureBuilder AddEntityFrameworkCore(this ISIOInfrastructureBuilder builder)
         {
@@ -61,8 +63,8 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Extensions
             var entityFrameworkCoreStoreProjectorOptions = new EntityFrameworkCoreStoreProjectorOptions();
             options(entityFrameworkCoreStoreProjectorOptions);
 
-            foreach (var (type, projectorOptions) in entityFrameworkCoreStoreProjectorOptions.Projections)
-                builder.Services.RegisterProjection(type, projectorOptions);
+            foreach (var (projectionType, managerType, projectorOptions) in entityFrameworkCoreStoreProjectorOptions.Projections)
+                builder.Services.RegisterProjection(projectionType, managerType, projectorOptions);
 
             return builder;
         }
@@ -70,21 +72,26 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Extensions
 
     public class EntityFrameworkCoreStoreProjectorOptions
     {
-        internal List<(Type type, object options)> Projections { get; }
+        internal List<(Type projectionType, Type managerType, object options)> Projections { get; }
 
         public EntityFrameworkCoreStoreProjectorOptions()
         {
             Projections = new();
         }
 
-        public void WithProjection<TProjection>(Action<StoreProjectorOptions<TProjection>> options = null)
+        public EntityFrameworkCoreStoreProjectorOptions WithProjection<TProjection, TProjectionManager>(Action<StoreProjectorOptions<TProjection>> options = null)
             where TProjection : class, IProjection
+            where TProjectionManager : class, IProjectionManager<TProjection>
         {
             options ??= o => o.Interval = 1000;
+
             Projections.Add((
-                type: typeof(TProjection),
+                projectionType: typeof(TProjection),
+                managerType: typeof(TProjectionManager),
                 options: options
             ));
+
+            return this;
         }
     }
 }

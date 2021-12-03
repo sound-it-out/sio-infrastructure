@@ -81,11 +81,12 @@ namespace SIO.Infrastructure.Testing.Abstractions
         {
         }
 
-        public SpecificationWithConfiguration(TConfigurationFixture configurationFixture)
+        public SpecificationWithConfiguration(TConfigurationFixture configurationFixture, ITestOutputHelper testOutputHelper)
         {
             _configurationFixture = configurationFixture;
 
             var services = new ServiceCollection();
+            services.AddXunitLogging(testOutputHelper);
 
             BuildServices(services);
 
