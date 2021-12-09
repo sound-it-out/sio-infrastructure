@@ -86,11 +86,11 @@ namespace SIO.Infrastructure
                 var ch = output[i];
                 if (ch == '+')
                 {
-                    output[i] = '-';
+                    output[i] = 'a';
                 }
                 else if (ch == '/')
                 {
-                    output[i] = '-';
+                    output[i] = 'b';
                 }
                 else if (ch == '=')
                 {
