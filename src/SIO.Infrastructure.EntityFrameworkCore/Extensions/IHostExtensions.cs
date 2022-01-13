@@ -8,11 +8,12 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Extensions
 {
     public static class IHostExtensions
     {
-        public static async Task RunStoreMigrationsAsync(this IHost host)
+        public static async Task RunStoreMigrationsAsync<TStoreDbContext>(this IHost host)
+            where TStoreDbContext : DbContext, ISIOStoreDbContext
         {
             using (var scope = host.Services.CreateScope())
             {
-                using (var context = scope.ServiceProvider.GetRequiredService<ISIOStoreDbContextFactory>().Create())
+                using (var context = scope.ServiceProvider.GetRequiredService<ISIOStoreDbContextFactory<TStoreDbContext>>().Create())
                     await context.Database.MigrateAsync();
             }
         }

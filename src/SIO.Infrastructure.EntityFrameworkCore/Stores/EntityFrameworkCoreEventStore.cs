@@ -10,22 +10,23 @@ using SIO.Infrastructure.Events;
 
 namespace SIO.Infrastructure.EntityFrameworkCore.Stores
 {
-    internal sealed class EntityFrameworkCoreEventStore : IEventStore
+    internal sealed class EntityFrameworkCoreEventStore<TStoreDbContext> : IEntityFrameworkEventStore<TStoreDbContext>
+        where TStoreDbContext : DbContext, ISIOStoreDbContext
     {
         private static readonly int DefaultReloadInterval = 2000;
         private static readonly int DefaultPageSize = 500;
 
-        private readonly ISIOStoreDbContextFactory _dbContextFactory;
+        private readonly ISIOStoreDbContextFactory<TStoreDbContext> _dbContextFactory;
         private readonly IEventContextFactory _eventContextFactory;
         private readonly IEventModelFactory _eventModelFactory;
         private readonly IEventTypeCache _eventTypeCache;
-        private readonly ILogger<EntityFrameworkCoreEventStore> _logger;
+        private readonly ILogger<EntityFrameworkCoreEventStore<TStoreDbContext>> _logger;
 
-        public EntityFrameworkCoreEventStore(ISIOStoreDbContextFactory dbContextFactory,
+        public EntityFrameworkCoreEventStore(ISIOStoreDbContextFactory<TStoreDbContext> dbContextFactory,
                                              IEventContextFactory eventContextFactory,
                                              IEventModelFactory eventModelFactory,
                                              IEventTypeCache eventTypeCache,
-                                             ILogger<EntityFrameworkCoreEventStore> logger)
+                                             ILogger<EntityFrameworkCoreEventStore<TStoreDbContext>> logger)
         {
             if (dbContextFactory == null)
                 throw new ArgumentNullException(nameof(dbContextFactory));

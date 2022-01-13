@@ -5,7 +5,8 @@ using SIO.Infrastructure.Events;
 
 namespace SIO.Infrastructure.Domain
 {
-    public interface IAggregateRepository
+    public interface IAggregateRepository<TStoreContext>
+        where TStoreContext : IStoreContext
     {
         Task<TAggregate> GetAsync<TAggregate, TState>(string id, CancellationToken cancellationToken = default)
             where TAggregate : Aggregate<TState>

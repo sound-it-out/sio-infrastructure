@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>SIO.Infrastructure.Azure.ServiceBus</PackageId>
-    <Version>0.0.6</Version>
+    <Version>0.0.7</Version>
     <Authors>sound-it-out</Authors>
     <Company>sound-it-out</Company>
     <PackageDescription></PackageDescription>
