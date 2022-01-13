@@ -36,7 +36,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
         }
 
         [ServiceBusTest]
-        public void WhenCreateTopicAsyncCalledWithNullTopicThenShouldThrowArgumentException()
+        public async Task WhenCreateTopicAsyncCalledWithNullTopicThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -44,12 +44,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
 
                 Func<Task> act = async () => await client.CreateTopicAsync(topicName: null);
 
-                act.Should().Throw<ArgumentException>()
+                (await act.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("topicName");
             }
         }
         [ServiceBusTest]
-        public void WhenCreateTopicAsyncCalledWithNonExistentTopicThenShouldSucceed()
+        public async Task WhenCreateTopicAsyncCalledWithNonExistentTopicThenShouldSucceed()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -57,11 +57,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
 
                 Func<Task> act = async () => await client.CreateTopicAsync(topicName: _topicName);
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenCreateTopicAsyncCalledWithExistingTopicThenShouldThrowExchangeAlreadyExistsException()
+        public async Task WhenCreateTopicAsyncCalledWithExistingTopicThenShouldThrowExchangeAlreadyExistsException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -73,12 +73,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateTopicAsync(topicName: _topicName);
                 };
 
-                act.Should().Throw<TopicAlreadyExistsException>()
+                (await act.Should().ThrowAsync<TopicAlreadyExistsException>())
                     .And.TopicName.Should().Be(_topicName);
             }
         }
         [ServiceBusTest]
-        public void WhenTopicExistsAsyncCalledWithTopicExchangeThenShouldReturnFalse()
+        public async Task WhenTopicExistsAsyncCalledWithTopicExchangeThenShouldReturnFalse()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -91,11 +91,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     result.Should().BeFalse();
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenTopicExistsAsyncCalledWithTopicExchangeThenShouldReturnTrue()
+        public async Task WhenTopicExistsAsyncCalledWithTopicExchangeThenShouldReturnTrue()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -103,7 +103,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
 
                 Func<Task> act = async () => await client.CreateTopicAsync(topicName: _topicName);
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
@@ -112,11 +112,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     result.Should().BeTrue();
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveTopicAsyncCalledWithNullTopicThenShouldThrowArgumentException()
+        public async Task WhenRemoveTopicAsyncCalledWithNullTopicThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -127,12 +127,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveTopicAsync(topicName: null);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("topicName");
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveTopicAsyncCalledWithExistingTopicThenShouldSucceed()
+        public async Task WhenRemoveTopicAsyncCalledWithExistingTopicThenShouldSucceed()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -140,18 +140,18 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
 
                 Func<Task> act = async () => await client.CreateTopicAsync(topicName: _topicName);
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
                     await client.RemoveTopicAsync(topicName: _topicName);
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveTopicAsyncCalledWithNonExistingTopicThenShouldThrowTopicNotFoundException()
+        public async Task WhenRemoveTopicAsyncCalledWithNonExistingTopicThenShouldThrowTopicNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -162,7 +162,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveTopicAsync(topicName: _topicName);
                 };
 
-                verify.Should().Throw<TopicNotFoundException>();
+                await verify.Should().ThrowAsync<TopicNotFoundException>();
             }
         }
         public void Dispose()

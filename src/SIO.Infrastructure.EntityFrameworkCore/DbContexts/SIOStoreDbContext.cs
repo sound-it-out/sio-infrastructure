@@ -4,7 +4,7 @@ using SIO.Infrastructure.EntityFrameworkCore.EntityConfiguration;
 
 namespace SIO.Infrastructure.EntityFrameworkCore.DbContexts
 {
-    public sealed class SIOStoreDbContext : DbContext
+    public class SIOStoreDbContext : DbContext
     {
         public DbSet<Command> Commands { get; set; }
         public DbSet<Event> Events { get; set; }

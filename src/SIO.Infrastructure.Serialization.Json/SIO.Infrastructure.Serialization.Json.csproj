@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0</TargetFrameworks>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>SIO.Infrastructure.Serialization.Json</PackageId>
-    <Version>0.0.5</Version>
+    <Version>0.0.6</Version>
     <Authors>sound-it-out</Authors>
     <Company>sound-it-out</Company>
     <PackageDescription></PackageDescription>

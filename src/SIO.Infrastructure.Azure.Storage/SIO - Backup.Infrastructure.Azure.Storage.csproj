@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>SIO.Infrastructure.Azure.Storage</PackageId>
+    <Version>0.0.6</Version>
+    <Authors>sound-it-out</Authors>
+    <Company>sound-it-out</Company>
+    <PackageDescription></PackageDescription>
+    <RepositoryUrl>https://github.com/sound-it-out/sio-infrastructure</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SIO.Infrastructure\SIO.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

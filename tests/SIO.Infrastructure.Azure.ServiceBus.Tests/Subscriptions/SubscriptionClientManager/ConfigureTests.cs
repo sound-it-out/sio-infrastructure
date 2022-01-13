@@ -39,7 +39,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Subscriptions.SubscriptionCl
         }
 
         [ServiceBusTest]
-        public void WhenConfigureAsyncCalledThenShouldConfigureTopic()
+        public async Task WhenConfigureAsyncCalledThenShouldConfigureTopic()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -49,7 +49,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Subscriptions.SubscriptionCl
 
                 Func<Task> act = async () => await manager.RegisterClientsAsync();
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
@@ -58,11 +58,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Subscriptions.SubscriptionCl
                     exists.Should().BeTrue();
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenConfigureAsyncCalledThenShouldConfigureSubscriptions()
+        public async Task WhenConfigureAsyncCalledThenShouldConfigureSubscriptions()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -73,7 +73,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Subscriptions.SubscriptionCl
 
                 Func<Task> act = async () => await manager.RegisterClientsAsync();
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
@@ -89,7 +89,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Subscriptions.SubscriptionCl
                     }
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
 

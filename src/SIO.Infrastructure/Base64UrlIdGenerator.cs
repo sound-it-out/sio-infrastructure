@@ -9,14 +9,14 @@ namespace SIO.Infrastructure
     {
         public static string New()
         {
-#if NET5_0
+#if NET6_0
             Span<byte> buffer = stackalloc byte[16];
 #endif
 #if NETSTANDARD2_0
             var buffer = new byte[16];
 #endif
             // Generate the id with RNGCrypto because we want a cryptographically random id, which GUID is not
-#if NET5_0
+#if NET6_0
             RandomNumberGenerator.Fill(buffer);
 #endif
 #if NETSTANDARD2_0
@@ -39,7 +39,7 @@ namespace SIO.Infrastructure
             var buffer = bufferSize <= 128
                 ? stackalloc char[bufferSize]
                 : bufferToReturnToPool = ArrayPool<char>.Shared.Rent(bufferSize);
-#if NET5_0
+#if NET6_0
             var base64CharCount = Base64UrlEncode(input, buffer);
             var result = new string(buffer.Slice(0, base64CharCount));
 #endif
@@ -52,7 +52,7 @@ namespace SIO.Infrastructure
 
             return result;
         }
-#if NET5_0
+#if NET6_0
         private static int Base64UrlEncode(ReadOnlySpan<byte> input, Span<char> output)
 #endif
 #if NETSTANDARD2_0
@@ -62,14 +62,14 @@ namespace SIO.Infrastructure
             Debug.Assert(output.Length >= GetArraySizeRequiredToEncode(input.Length));
 
             if (input.IsEmpty)
-#if NET5_0
+#if NET6_0
                 return 0;
 #endif
 #if NETSTANDARD2_0
                 return string.Empty;
 #endif
 
-#if NET5_0
+#if NET6_0
             // Use base64url encoding with no padding characters. See RFC 4648, Sec. 5.
             Convert.TryToBase64Chars(input, output, out var charsWritten);
 #endif
@@ -94,7 +94,7 @@ namespace SIO.Infrastructure
                 }
                 else if (ch == '=')
                 {
-#if NET5_0
+#if NET6_0
                     // We've reached a padding character; truncate the remainder.
                     return i;
 #endif
@@ -104,7 +104,7 @@ namespace SIO.Infrastructure
 #endif
                 }
             }
-#if NET5_0
+#if NET6_0
             return charsWritten;
 #endif
 #if NETSTANDARD2_0

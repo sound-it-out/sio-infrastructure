@@ -40,7 +40,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
         }
 
         [ServiceBusTest]
-        public void WhenCreateRuleAsyncCalledWithNullRuleThenShouldThrowArgumentException()
+        public async Task WhenCreateRuleAsyncCalledWithNullRuleThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -51,12 +51,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(ruleName: null, subscriptionName: $"test-sub-{Guid.NewGuid()}", topicName: _topicName);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("ruleName");
             }
         }
         [ServiceBusTest]
-        public void WhenCreateRuleAsyncCalledWithNullSubscriptionThenShouldThrowArgumentException()
+        public async Task WhenCreateRuleAsyncCalledWithNullSubscriptionThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -67,12 +67,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(ruleName: $"test-rule-{Guid.NewGuid()}", subscriptionName: null, topicName: _topicName);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("subscriptionName");
             }
         }
         [ServiceBusTest]
-        public void WhenCreateRuleAsyncCalledWithNullTopicThenShouldThrowArgumentException()
+        public async Task WhenCreateRuleAsyncCalledWithNullTopicThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -83,12 +83,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(ruleName: $"test-rule-{Guid.NewGuid()}", subscriptionName: $"test-sub-{Guid.NewGuid()}", topicName: null);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("topicName");
             }
         }
         [ServiceBusTest]
-        public void WhenCreateRuleAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
+        public async Task WhenCreateRuleAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -99,12 +99,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(ruleName: $"test-rule-{Guid.NewGuid()}", subscriptionName: $"test-sub-{Guid.NewGuid()}", topicName: _topicName);
                 };
 
-                verify.Should().Throw<TopicNotFoundException>()
+                (await verify.Should().ThrowAsync<TopicNotFoundException>())
                     .And.TopicName.Should().Be(_topicName);
             }
         }
         [ServiceBusTest]
-        public void WhenCreateRuleAsyncCalledWithNonExistentSubscriptionThenShouldThrowSubscriptionNotFoundException()
+        public async Task WhenCreateRuleAsyncCalledWithNonExistentSubscriptionThenShouldThrowSubscriptionNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -115,19 +115,19 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateTopicAsync(_topicName);
                 };
 
-                setup.Should().NotThrow();
+                await setup.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
                     await client.CreateRuleAsync(ruleName: $"test-rule-{Guid.NewGuid()}", subscriptionName: _subscriptionName, topicName: _topicName);
                 };
 
-                verify.Should().Throw<SubscriptionNotFoundException>()
+                (await verify.Should().ThrowAsync<SubscriptionNotFoundException>())
                     .And.SubscriptionName.Should().Be(_subscriptionName);
             }
         }
         [ServiceBusTest]
-        public void WhenCreateRuleAsyncCalledWithNonExistentRuleThenShouldSucceed()
+        public async Task WhenCreateRuleAsyncCalledWithNonExistentRuleThenShouldSucceed()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -140,7 +140,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(ruleName: _ruleName, subscriptionName: _subscriptionName, topicName: _topicName);
                 };
 
-                setup.Should().NotThrow();
+                await setup.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
@@ -149,11 +149,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     exists.Should().BeTrue();
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenCreateRuleAsyncCalledWithExistingRuleThenShouldThrowRuleAlreadyExistsException()
+        public async Task WhenCreateRuleAsyncCalledWithExistingRuleThenShouldThrowRuleAlreadyExistsException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -166,19 +166,19 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(ruleName: _ruleName, subscriptionName: _subscriptionName, topicName: _topicName);
                 };
 
-                setup.Should().NotThrow();
+                await setup.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
                     await client.CreateRuleAsync(ruleName: _ruleName, subscriptionName: _subscriptionName, topicName: _topicName);
                 };
 
-                verify.Should().Throw<RuleAlreadyExistsException>()
+                (await verify.Should().ThrowAsync<RuleAlreadyExistsException>())
                     .And.RuleName.Should().Be(_ruleName);
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveRuleAsyncCalledWithNullRuleThenShouldThrowArgumentException()
+        public async Task WhenRemoveRuleAsyncCalledWithNullRuleThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -189,12 +189,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveRuleAsync(ruleName: null, subscriptionName: $"test-sub-{Guid.NewGuid()}", topicName: _topicName);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("ruleName");
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveRuleAsyncCalledWithNullSubscriptionThenShouldThrowArgumentException()
+        public async Task WhenRemoveRuleAsyncCalledWithNullSubscriptionThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -205,12 +205,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveRuleAsync(ruleName: $"test-rule-{Guid.NewGuid()}", subscriptionName: null, topicName: _topicName);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("subscriptionName");
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveRuleAsyncCalledWithNullTopicThenShouldThrowArgumentException()
+        public async Task WhenRemoveRuleAsyncCalledWithNullTopicThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -221,12 +221,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveRuleAsync(ruleName: $"test-rule-{Guid.NewGuid()}", subscriptionName: $"test-sub-{Guid.NewGuid()}", topicName: null);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("topicName");
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveRuleAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
+        public async Task WhenRemoveRuleAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -237,12 +237,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveRuleAsync(ruleName:_ruleName, subscriptionName: _subscriptionName, topicName: _topicName);
                 };
 
-                act.Should().Throw<TopicNotFoundException>()
+                (await act.Should().ThrowAsync<TopicNotFoundException>())
                     .And.TopicName.Should().Be(_topicName);
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveRuleAsyncCalledWithNonExistentSubscriptionThenShouldThrowSubscriptionNotFoundException()
+        public async Task WhenRemoveRuleAsyncCalledWithNonExistentSubscriptionThenShouldThrowSubscriptionNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -253,19 +253,19 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateTopicAsync(_topicName);
                 };
 
-                setup.Should().NotThrow();
+                await setup.Should().NotThrowAsync();
 
                 Func<Task> act = async () =>
                 {
                     await client.RemoveRuleAsync(ruleName: _ruleName, subscriptionName: _subscriptionName, topicName: _topicName);
                 };
 
-                act.Should().Throw<SubscriptionNotFoundException>()
+                (await act.Should().ThrowAsync<SubscriptionNotFoundException>())
                     .And.SubscriptionName.Should().Be(_subscriptionName);
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveRuleAsyncCalledWithNonExistentRuleThenShouldSucceed()
+        public async Task WhenRemoveRuleAsyncCalledWithNonExistentRuleThenShouldSucceed()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -278,7 +278,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(ruleName: _ruleName, subscriptionName: _subscriptionName, topicName: _topicName);
                 };
 
-                setup.Should().NotThrow();
+                await setup.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
@@ -293,11 +293,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     exists.Should().BeFalse();
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenRetrieveRulesAsyncCalledWithNullSubscriptionThenShouldThrowArgumentException()
+        public async Task WhenRetrieveRulesAsyncCalledWithNullSubscriptionThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -308,12 +308,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RetrieveRulesAsync(subscriptionName: null, topicName: _topicName);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("subscriptionName");
             }
         }
         [ServiceBusTest]
-        public void WhenRetrieveRulesAsyncCalledWithNullTopicThenShouldThrowArgumentException()
+        public async Task WhenRetrieveRulesAsyncCalledWithNullTopicThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -324,12 +324,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RetrieveRulesAsync(subscriptionName: $"test-sub-{Guid.NewGuid()}", topicName: null);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("topicName");
             }
         }
         [ServiceBusTest]
-        public void WhenRetrieveRulesAsyncCalledWithSubscriptionWhichHasSingleRuleThenShouldReturnExpectedRule()
+        public async Task WhenRetrieveRulesAsyncCalledWithSubscriptionWhichHasSingleRuleThenShouldReturnExpectedRule()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -343,7 +343,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateRuleAsync(nameof(SampleEvent), _subscriptionName, _topicName);
                 };
 
-                setup.Should().NotThrow();
+                await setup.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
@@ -353,11 +353,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     rules.Should().OnlyContain(r => r.Rule == nameof(SampleEvent));
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenRetrieveRulesAsyncCalledWithSubscriptionWhichHasMultipleRulesThenShouldReturnExpectedRules()
+        public async Task WhenRetrieveRulesAsyncCalledWithSubscriptionWhichHasMultipleRulesThenShouldReturnExpectedRules()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -376,7 +376,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     }
                 };
 
-                setup.Should().NotThrow();
+                await setup.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 { 
@@ -386,7 +386,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     rules.Should().OnlyContain(r => r.Rule.StartsWith($"{nameof(SampleEvent)}_"));
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
             }
         }
 
