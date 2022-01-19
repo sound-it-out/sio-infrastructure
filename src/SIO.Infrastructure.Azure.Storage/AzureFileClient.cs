@@ -30,12 +30,14 @@ namespace SIO.Infrastructure.Azure.Storage
         {
             var blobClient = await GetBlobAsync(fileName, userId);
             await blobClient.DownloadToAsync(stream);
+            stream.Position = 0;
         }
 
         public async Task UploadAsync(string fileName, string userId, Stream stream, CancellationToken cancellationToken = default)
         {
             var blobClient = await GetBlobAsync(fileName, userId);
             await blobClient.UploadAsync(stream);
+            stream.Position = 0;
         }
 
         private async Task<BlobClient> GetBlobAsync(string fileName, string userId)

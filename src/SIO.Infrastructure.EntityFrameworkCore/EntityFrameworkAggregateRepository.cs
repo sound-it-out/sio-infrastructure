@@ -58,7 +58,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
 
             var currentVersion = await _eventStore.CountAsync(StreamId.From(aggregate.Id));
 
-            if (expectedVersion.GetValueOrDefault() != currentVersion)
+            if (expectedVersion.HasValue && expectedVersion.Value != currentVersion)
                 throw new ConcurrencyException(aggregate.Id, expectedVersion.GetValueOrDefault(), currentVersion);
 
             var contexts = events.Select(@event => new EventContext<IEvent>(
@@ -91,7 +91,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
 
             var currentVersion = await _eventStore.CountAsync(StreamId.From(aggregate.Id));
 
-            if (expectedVersion.GetValueOrDefault() != currentVersion)
+            if (expectedVersion.HasValue && expectedVersion.Value != currentVersion)
                 throw new ConcurrencyException(aggregate.Id, expectedVersion.GetValueOrDefault(), currentVersion);
 
             var contexts = events.Select(@event => new EventContext<IEvent>(
@@ -124,7 +124,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore
 
             var currentVersion = await _eventStore.CountAsync(StreamId.From(aggregate.Id));
 
-            if (expectedVersion.GetValueOrDefault() != currentVersion)
+            if (expectedVersion.HasValue && expectedVersion.Value != currentVersion)
                 throw new ConcurrencyException(aggregate.Id, expectedVersion.GetValueOrDefault(), currentVersion);
 
             var contexts = events.Select(@event => new EventContext<IEvent>(

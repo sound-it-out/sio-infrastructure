@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <PackageId>SIO.Infrastructure.Connections</PackageId>
+    <Version>0.0.8</Version>
+    <Authors>sound-it-out</Authors>
+    <Company>sound-it-out</Company>
+    <PackageDescription></PackageDescription>
+    <RepositoryUrl>https://github.com/sound-it-out/sio-infrastructure</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
