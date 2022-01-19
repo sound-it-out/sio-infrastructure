@@ -36,7 +36,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
         }
 
         [ServiceBusTest]
-        public void WhenCreateSubscriptionAsyncCalledWithNullTopicNameThenShouldThrowArgumentException()
+        public async Task WhenCreateSubscriptionAsyncCalledWithNullTopicNameThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -47,12 +47,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateSubscriptionAsync(subscriptionName: $"test-sub-{Guid.NewGuid()}", topicName: null);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("topicName");
             }
         }
         [ServiceBusTest]
-        public void WhenCreateSubscriptionAsyncCalledWithNullSubscriptionNameThenShouldThrowArgumentException()
+        public async Task WhenCreateSubscriptionAsyncCalledWithNullSubscriptionNameThenShouldThrowArgumentException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -63,12 +63,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateSubscriptionAsync(subscriptionName: null, topicName: _topicName);
                 };
 
-                verify.Should().Throw<ArgumentException>()
+                (await verify.Should().ThrowAsync<ArgumentException>())
                     .And.ParamName.Should().Be("subscriptionName");
             }
         }
         [ServiceBusTest]
-        public void WhenCreateSubscriptionAsyncCalledWithNonExistentSubscriptionThenShouldSucceed()
+        public async Task WhenCreateSubscriptionAsyncCalledWithNonExistentSubscriptionThenShouldSucceed()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -81,11 +81,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateSubscriptionAsync(subscriptionName: subscriptionName, topicName: _topicName);
                 };
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenCreateSubscriptionAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
+        public async Task WhenCreateSubscriptionAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -95,12 +95,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
 
                 Func<Task> act = async () => await client.CreateSubscriptionAsync(subscriptionName: subscriptionName, topicName: topicName);
 
-                act.Should().Throw<TopicNotFoundException>()
+                (await act.Should().ThrowAsync<TopicNotFoundException>())
                     .And.TopicName.Should().Be(topicName);
             }
         }
         [ServiceBusTest]
-        public void WhenCreateSubscriptionAsyncCalledWithExistingSubscriptionThenShouldThrowSubscriptionAlreadyExistsException()
+        public async Task WhenCreateSubscriptionAsyncCalledWithExistingSubscriptionThenShouldThrowSubscriptionAlreadyExistsException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -114,12 +114,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.CreateSubscriptionAsync(subscriptionName: subscriptionName, topicName: _topicName);
                 };
 
-                act.Should().Throw<SubscriptionAlreadyExistsException>()
+                (await act.Should().ThrowAsync<SubscriptionAlreadyExistsException>())
                     .And.SubscriptionName.Should().Be(subscriptionName);
             }
         }
         [ServiceBusTest]
-        public void WhenSubscriptionExistsAsyncCalledWithExistingSubscriptionThenShouldReturnTrue()
+        public async Task WhenSubscriptionExistsAsyncCalledWithExistingSubscriptionThenShouldReturnTrue()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -136,11 +136,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     result.Should().BeTrue();
                 };
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenSubscriptionExistsAsyncCalledWithNonExistingTopicThenShouldReturnFalse()
+        public async Task WhenSubscriptionExistsAsyncCalledWithNonExistingTopicThenShouldReturnFalse()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -156,11 +156,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     result.Should().BeFalse();
                 };
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenSubscriptionExistsAsyncCalledWithNonExistingSubscriptionThenShouldReturnFalse()
+        public async Task WhenSubscriptionExistsAsyncCalledWithNonExistingSubscriptionThenShouldReturnFalse()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -176,11 +176,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     result.Should().BeFalse();
                 };
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveSubscriptionAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
+        public async Task WhenRemoveSubscriptionAsyncCalledWithNonExistentTopicThenShouldThrowTopicNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -192,12 +192,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveSubscriptionAsync(subscriptionName: subscriptionName, topicName: _topicName);
                 };
 
-                act.Should().Throw<TopicNotFoundException>()
+                (await act.Should().ThrowAsync<TopicNotFoundException>())
                     .And.TopicName.Should().Be(_topicName);
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveSubscriptionAsyncCalledWithNonExistentSubscriptionThenShouldThrowSubscriptionNotFoundException()
+        public async Task WhenRemoveSubscriptionAsyncCalledWithNonExistentSubscriptionThenShouldThrowSubscriptionNotFoundException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -210,12 +210,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveSubscriptionAsync(subscriptionName: subscriptionName, topicName: _topicName);
                 };
 
-                act.Should().Throw<SubscriptionNotFoundException>()
+                (await act.Should().ThrowAsync<SubscriptionNotFoundException>())
                     .And.SubscriptionName.Should().Be(subscriptionName);
             }
         }
         [ServiceBusTest]
-        public void WhenRemoveSubscriptionAsyncCalledWithExistingSubscriptionThenShouldSucceed()
+        public async Task WhenRemoveSubscriptionAsyncCalledWithExistingSubscriptionThenShouldSucceed()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -229,7 +229,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Management
                     await client.RemoveSubscriptionAsync(subscriptionName: subscriptionName, topicName: _topicName);
                 };
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
 

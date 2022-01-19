@@ -11,11 +11,11 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
 {
     internal sealed class EntityFrameworkCoreQueryStore : IQueryStore
     {
-        private readonly ISIOStoreDbContextFactory _dbContextFactory;
+        private readonly ISIOStoreDbContextFactory<SIOStoreDbContext> _dbContextFactory;
         private readonly IQuerySerializer _querySerializer;
         private readonly ILogger<EntityFrameworkCoreQueryStore> _logger;
 
-        public EntityFrameworkCoreQueryStore(ISIOStoreDbContextFactory dbContextFactory,
+        public EntityFrameworkCoreQueryStore(ISIOStoreDbContextFactory<SIOStoreDbContext> dbContextFactory,
             IQuerySerializer querySerializer,
             ILogger<EntityFrameworkCoreQueryStore> logger)
         {

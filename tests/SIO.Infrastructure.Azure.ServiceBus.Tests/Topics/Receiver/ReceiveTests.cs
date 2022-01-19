@@ -43,7 +43,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Receiver
         }
 
         [ServiceBusTest]
-        public void WhenStartCalledThenShouldConsumePublishedEventWithSingleSubscription()
+        public async Task WhenStartCalledThenShouldConsumePublishedEventWithSingleSubscription()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -55,7 +55,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Receiver
 
                 Func<Task> act = async () => await receiver.StartAsync(CancellationToken.None);
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
 
                 Func<Task> verify = async () =>
                 {
@@ -69,7 +69,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Receiver
                     await Task.Delay(500);
                 };
 
-                verify.Should().NotThrow();
+                await verify.Should().NotThrowAsync();
 
                 SampleReceiverEventHandler.Received.Should().Be(1);
             }

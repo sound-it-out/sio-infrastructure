@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace SIO.Infrastructure.Events
 {
-    public interface IEventStore
+    public interface IEventStore<TStoreContext>
+        where TStoreContext : IStoreContext
     {
         Task<Page> GetEventsAsync(long offset, CancellationToken cancellationToken = default);
         Task<IEnumerable<IEventContext<IEvent>>> GetEventsAsync(StreamId streamId, CancellationToken cancellationToken = default);

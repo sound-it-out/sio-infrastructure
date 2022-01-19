@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,21 +11,22 @@ using SIO.Infrastructure.Events;
 using SIO.Infrastructure.Projections;
 namespace SIO.Infrastructure.EntityFrameworkCore.Projections
 {
-    public sealed class EntityFrameworkCoreStoreProjector<TProjection> : IProjector<TProjection>
+    public sealed class EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore> : IProjector<TProjection>
         where TProjection : class, IProjection
+        where TDbContextStore : DbContext, ISIOStoreDbContext
     {
         private Task _executingTask;
         private CancellationTokenSource StoppingCts { get; set; }
         private readonly IProjectionManager<TProjection> _projectionManager;
         private readonly IServiceScope _scope;
-        private readonly IEventStore _eventStore;
-        private readonly ILogger<EntityFrameworkCoreStoreProjector<TProjection>> _logger;
+        private readonly IEventStore<TDbContextStore> _eventStore;
+        private readonly ILogger<EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>> _logger;
         private readonly IOptionsSnapshot<StoreProjectorOptions<TProjection>> _options;
         private readonly ISIOProjectionDbContextFactory _projectionDbContextFactory;
         private readonly string _name;
 
         public EntityFrameworkCoreStoreProjector(IServiceScopeFactory serviceScopeFactory,
-            ILogger<EntityFrameworkCoreStoreProjector<TProjection>> logger)
+            ILogger<EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>> logger)
         {
             if (serviceScopeFactory == null)
                 throw new ArgumentNullException(nameof(serviceScopeFactory));
@@ -35,7 +37,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
             _logger = logger;
 
             _projectionManager = _scope.ServiceProvider.GetRequiredService<IProjectionManager<TProjection>>();
-            _eventStore = _scope.ServiceProvider.GetRequiredService<IEventStore>();
+            _eventStore = _scope.ServiceProvider.GetRequiredService<IEventStore<TDbContextStore>>();
             _options = _scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<StoreProjectorOptions<TProjection>>>();
             _projectionDbContextFactory = _scope.ServiceProvider.GetRequiredService<ISIOProjectionDbContextFactory>();
 
@@ -46,16 +48,16 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)}.{nameof(StartAsync)} was cancelled before execution");
+                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)}.{nameof(StartAsync)} was cancelled before execution");
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)} starting");
+            _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)} starting");
             StoppingCts = new();
 
             _executingTask = ExecuteAsync(StoppingCts.Token);
 
-            _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)} started");
+            _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)} started");
 
             if (_executingTask.IsCompleted)
                 return _executingTask;
@@ -66,11 +68,11 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)}.{nameof(StopAsync)} was cancelled before execution");
+                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)}.{nameof(StopAsync)} was cancelled before execution");
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)} stopping");
+            _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)} stopping");
 
             if (_executingTask == null)
                 return;
@@ -82,7 +84,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
             finally
             {
                 await Task.WhenAny(_executingTask, Task.Delay(Timeout.Infinite, cancellationToken));
-                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)} stopped");
+                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)} stopped");
             }
         }
 
@@ -90,7 +92,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)}.{nameof(ResetAsync)} was cancelled before execution");
+                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)}.{nameof(ResetAsync)} was cancelled before execution");
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
@@ -114,7 +116,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Projections
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection>)}.{nameof(ExecuteAsync)} was cancelled before execution");
+                _logger.LogInformation($"{nameof(EntityFrameworkCoreStoreProjector<TProjection, TDbContextStore>)}.{nameof(ExecuteAsync)} was cancelled before execution");
                 cancellationToken.ThrowIfCancellationRequested();
             }
 

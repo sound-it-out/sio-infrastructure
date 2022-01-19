@@ -18,13 +18,7 @@ namespace SIO.Infrastructure.EntityFrameworkCore.SqlServer.Extensions
             var sqlBuilder = new SIOEntityFrameworkCoreSqlServerOptions();
             builderAction(sqlBuilder);
 
-            if (!string.IsNullOrWhiteSpace(sqlBuilder.StoreConnectionString))
-            {
-                source.Services.AddDbContext<SIOStoreDbContext>(options =>
-                {
-                    options.UseSqlServer(sqlBuilder.StoreConnectionString, sqlBuilder.StoreOptions);
-                });
-            }
+            source.AddEntityFrameworkCoreStore(o => IntializeStoreOptions(sqlBuilder, o));
 
             if (!string.IsNullOrWhiteSpace(sqlBuilder.ProjectionConnectionString))
             {
@@ -35,6 +29,12 @@ namespace SIO.Infrastructure.EntityFrameworkCore.SqlServer.Extensions
             }
 
             return source;
+        }
+
+        private static void IntializeStoreOptions(SIOEntityFrameworkCoreSqlServerOptions builder, EntityFrameworkCoreStoreOptions options)
+        {
+            foreach (var storeOption in builder.StoreOptions)
+                options.WithContext(storeOption.StoreType, o => o.UseSqlServer(storeOption.ConnectionString, storeOption.StoreOptions));
         }
     }
 }

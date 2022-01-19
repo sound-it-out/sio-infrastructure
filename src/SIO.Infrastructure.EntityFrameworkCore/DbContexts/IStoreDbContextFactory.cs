@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace SIO.Infrastructure.EntityFrameworkCore.DbContexts
 {
-    public interface ISIOStoreDbContextFactory
+    public interface ISIOStoreDbContextFactory<TStoreDbContext>
+        where TStoreDbContext : DbContext, ISIOStoreDbContext
     {
-        SIOStoreDbContext Create();
+        TStoreDbContext Create();
     }
 }

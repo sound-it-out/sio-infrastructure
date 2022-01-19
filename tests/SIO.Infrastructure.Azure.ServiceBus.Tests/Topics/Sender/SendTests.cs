@@ -37,7 +37,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Sender
         }
 
         [ServiceBusTest]
-        public void WhenSendAsyncCalledWithSingleNullEventThenShouldThrowArgumentNullException()
+        public async Task WhenSendAsyncCalledWithSingleNullEventThenShouldThrowArgumentNullException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -45,12 +45,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Sender
 
                 Func<Task> act = async () => await sender.SendAsync((IEventNotification<IEvent>)null);
 
-                act.Should().Throw<ArgumentNullException>()
+                (await act.Should().ThrowAsync<ArgumentNullException>())
                     .And.ParamName.Should().Be("context");
             }
         }
         [ServiceBusTest]
-        public void WhenSendAsyncCalledWithNullEventsThenShouldThrowArgumentNullException()
+        public async Task WhenSendAsyncCalledWithNullEventsThenShouldThrowArgumentNullException()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -58,12 +58,12 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Sender
 
                 Func<Task> act = async () => await sender.SendAsync((IEnumerable<IEventNotification<IEvent>>)null);
 
-                act.Should().Throw<ArgumentNullException>()
+                (await act.Should().ThrowAsync<ArgumentNullException>())
                     .And.ParamName.Should().Be("contexts");
             }
         }
         [ServiceBusTest]
-        public void WhenSendAsyncCalledWithSingleEventThenShouldSendEvent()
+        public async Task WhenSendAsyncCalledWithSingleEventThenShouldSendEvent()
         {
             using (var scope = ServiceProvider.CreateScope())
             { 
@@ -73,11 +73,11 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Sender
 
                 Func<Task> act = async () => await sender.SendAsync(notification);
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
         [ServiceBusTest]
-        public void WhenSendAsyncCalledWithMultipleEventsThenShouldSendEvents()
+        public async Task WhenSendAsyncCalledWithMultipleEventsThenShouldSendEvents()
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -87,7 +87,7 @@ namespace SIO.Infrastructure.Azure.ServiceBus.Tests.Topics.Sender
                 
                 Func<Task> act = async () => await sender.SendAsync(notifications);
 
-                act.Should().NotThrow();
+                await act.Should().NotThrowAsync();
             }
         }
 

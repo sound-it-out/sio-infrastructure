@@ -10,11 +10,11 @@ namespace SIO.Infrastructure.EntityFrameworkCore.Stores
 {
     internal sealed class EntityFrameworkCoreCommandStore : ICommandStore
     {
-        private readonly ISIOStoreDbContextFactory _dbContextFactory;
+        private readonly ISIOStoreDbContextFactory<SIOStoreDbContext> _dbContextFactory;
         private readonly ICommandSerializer _commandSerializer;
         private readonly ILogger<EntityFrameworkCoreCommandStore> _logger;
 
-        public EntityFrameworkCoreCommandStore(ISIOStoreDbContextFactory dbContextFactory,
+        public EntityFrameworkCoreCommandStore(ISIOStoreDbContextFactory<SIOStoreDbContext> dbContextFactory,
                                                ICommandSerializer commandSerializer,
                                                ILogger<EntityFrameworkCoreCommandStore> logger)
         {

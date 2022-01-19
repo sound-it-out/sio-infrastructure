@@ -37,6 +37,16 @@ namespace SIO.Infrastructure.RabbitMQ
 
             return this;
         }
+
+        public RabbitMqSubscription ForEvents(params Type[] types)
+        {
+            foreach (var type in types)
+                if (typeof(IEvent).IsAssignableFrom(type) && !Events.Contains(type))
+                    Events.Add(type);
+
+            return this;
+        }
+
         /// <summary>
         /// Sets the subscription to auto delete once all consumers disconnect. Defaults to false.
         /// </summary>

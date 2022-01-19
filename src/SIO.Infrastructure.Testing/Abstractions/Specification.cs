@@ -74,10 +74,10 @@ namespace SIO.Infrastructure.Testing.Abstractions
         {
         }
 
-        public Specification()
+        public Specification(ITestOutputHelper testOutputHelper)
         {
             var services = new ServiceCollection();
-
+            services.AddXunitLogging(testOutputHelper);
             BuildServices(services);
 
             _serviceProvider = services.BuildServiceProvider();

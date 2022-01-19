@@ -1,19 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using SIO.Infrastructure.EntityFrameworkCore.DbContexts;
 
 namespace SIO.Infrastructure.EntityFrameworkCore.SqlServer
 {
     public class SIOEntityFrameworkCoreSqlServerOptions
     {
-        internal string StoreConnectionString { get; private set; }
         internal string ProjectionConnectionString { get; private set; }
-        internal Action<SqlServerDbContextOptionsBuilder> StoreOptions { get; private set; }
+        internal List<StoreOption> StoreOptions { get; private set; }
         internal Action<SqlServerDbContextOptionsBuilder> ProjectionOptions { get; private set; }
 
-        public SIOEntityFrameworkCoreSqlServerOptions AddStore(string connectionString, Action<SqlServerDbContextOptionsBuilder> action = null)
+        public SIOEntityFrameworkCoreSqlServerOptions()
         {
-            StoreConnectionString = connectionString;
-            StoreOptions = action;
+            StoreOptions = new();
+        }
+
+        public SIOEntityFrameworkCoreSqlServerOptions AddStore<TStoreDbContext>(string connectionString, Action<SqlServerDbContextOptionsBuilder> action = null)
+            where TStoreDbContext : ISIOStoreDbContext
+        {
+            StoreOptions.Add(new StoreOption(typeof(TStoreDbContext), connectionString, action));
             return this;
         }
 
@@ -22,6 +28,8 @@ namespace SIO.Infrastructure.EntityFrameworkCore.SqlServer
             ProjectionConnectionString = connectionString;
             ProjectionOptions = action;
             return this;
-        }
+        }        
     }
+
+    internal record StoreOption(Type StoreType, string ConnectionString, Action<SqlServerDbContextOptionsBuilder> StoreOptions);
 }

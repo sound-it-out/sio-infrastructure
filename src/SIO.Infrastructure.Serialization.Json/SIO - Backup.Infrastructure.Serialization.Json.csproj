@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>SIO.Infrastructure.Serialization.Json</PackageId>
+    <Version>0.0.8</Version>
+    <Authors>sound-it-out</Authors>
+    <Company>sound-it-out</Company>
+    <PackageDescription></PackageDescription>
+    <RepositoryUrl>https://github.com/sound-it-out/sio-infrastructure</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SIO.Infrastructure\SIO.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

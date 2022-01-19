@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SIO.Infrastructure.EntityFrameworkCore.DbContexts
 {
-    internal sealed class SIOStoreDbContextFactory : ISIOStoreDbContextFactory
+    internal sealed class SIOStoreDbContextFactory<TStoreDbContext> : ISIOStoreDbContextFactory<TStoreDbContext>
+        where TStoreDbContext : DbContext, ISIOStoreDbContext
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -17,10 +17,10 @@ namespace SIO.Infrastructure.EntityFrameworkCore.DbContexts
             _serviceProvider = serviceProvider;
         }
 
-        public SIOStoreDbContext Create()
+        public TStoreDbContext Create()
         {
-            var options = _serviceProvider.GetRequiredService<DbContextOptions<SIOStoreDbContext>>();
-            return new SIOStoreDbContext(options);
+            var options = _serviceProvider.GetRequiredService<DbContextOptions<TStoreDbContext>>();
+            return (TStoreDbContext)Activator.CreateInstance(typeof(TStoreDbContext), new object[] { options });
         }
     }
 }
